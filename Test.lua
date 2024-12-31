@@ -100,8 +100,8 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
-        Client:Kick("ISSUE OCCURED")
-        local Imagemonkey = "Thugborean.mp4"
+        Client:Kick("NOO SPYING!!")
+        local Imagemonkey = "King-Von-Anti-piracy.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
 
@@ -116,15 +116,15 @@ local function CustomRequest(Link, Custom)
         Video.Looped = false
         Video:Play()
 
-        wait(27)
+        wait(26)
 
         Video:Destroy()
         inst:Destroy()
         return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
-        Client:Kick("ISSUE OCCURED")
-        local Imagemonkey = "Thugborean.mp4"
+        Client:Kick("NOO SPYING!!")
+        local Imagemonkey = "King-Von-Anti-piracy.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
 
@@ -139,7 +139,7 @@ local function CustomRequest(Link, Custom)
         Video.Looped = false
         Video:Play()
 
-        wait(27)
+        wait(26)
 
         Video:Destroy()
         inst:Destroy()
