@@ -100,6 +100,17 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
+        function chat(msg)
+            if not isLegacyChat then
+                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
+            else
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
+            end
+        end
+        task.spawn(function()
+            chat("HTTP SPY DETECTED KICKING USER")
+        end)
+        wait(3)
         Client:Kick("NOO SPYING!!")
         local Imagemonkey = "Thugwaffen.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
@@ -123,6 +134,17 @@ local function CustomRequest(Link, Custom)
         return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
+        function chat(msg)
+            if not isLegacyChat then
+                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
+            else
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
+            end
+        end
+        task.spawn(function()
+            chat("HTTP SPY DETECTED KICKING USER")
+        end)
+        wait(3)
         Client:Kick("NOO SPYING!!")
         local Imagemonkey = "Thugwaffen.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
