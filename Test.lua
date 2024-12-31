@@ -99,6 +99,7 @@ local function CustomRequest(Link, Custom)
 
 	if not Success then return Client:Kick("Skid") end
 	if not typeof(Result) == "table" then
+        return Client:Kick("Skid") end
         local Imagemonkey = "Thugborean.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
@@ -119,7 +120,6 @@ local function CustomRequest(Link, Custom)
         local p = game:GetService("Players").LocalPlayer
 
         ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
-        return Client:Kick("Skid") end
 	
 	return Result.Body
 end
