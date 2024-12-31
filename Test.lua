@@ -116,7 +116,7 @@ local function CustomRequest(Link, Custom)
         Video.Looped = false
         Video:Play()
 
-        wait(26)
+        wait(8)
 
         Video:Destroy()
         inst:Destroy()
@@ -139,7 +139,7 @@ local function CustomRequest(Link, Custom)
         Video.Looped = false
         Video:Play()
 
-        wait(26)
+        wait(8)
 
         Video:Destroy()
         inst:Destroy()
