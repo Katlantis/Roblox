@@ -260,7 +260,7 @@ do
         ["Gyat.png"]                                            = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Gyat.png",
         ["Thugborean.mp4"]                                      = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Thugborean.mp4",
         ["Sigmaland.mp4"]                                       = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Sigmaland.mp4",
-        ["Sigmaland.mp4"]                                       = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Kingvon.mp4",
+        ["Thugwaffen.mp4"]                                       = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Thugwaffen.mp4",
     }
 
     if not isfile("Fondra-Physics/Passed") then
