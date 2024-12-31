@@ -97,8 +97,8 @@ local function CustomRequest(Link, Custom)
         Method                                                  = "GET"
     })
 
-    if not Success then return Client:Kick("ISSUE OCCURED") end
-        local Imagemonkey = "Thugborean.mp4"
+    if not Success then 
+		return local Imagemonkey = "Thugborean.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
 
@@ -120,9 +120,9 @@ local function CustomRequest(Link, Custom)
         ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         Video:Destroy()
-        inst:Destroy()
-    if not typeof(Result) == "table" then return Client:Kick("ISSUE OCCURED") end
-        local Imagemonkey = "Thugborean.mp4"
+        inst:Destroy() end
+    if not typeof(Result) == "table" then 
+		return local Imagemonkey = "Thugborean.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
 
@@ -144,8 +144,8 @@ local function CustomRequest(Link, Custom)
         ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         Video:Destroy()
-        inst:Destroy()
-    
+        inst:Destroy() end
+
     return Result.Body
 end
 
