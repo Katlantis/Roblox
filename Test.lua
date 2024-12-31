@@ -3,6 +3,8 @@ local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
 local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
+local ts = game:GetService("TeleportService")
+local p = game:GetService("Players").LocalPlayer
 local Niggaversion     = "v2.1.5 Private Beta unreleased"
 local Game                                                      = game
 local Services                                                  = setmetatable({}, {
@@ -98,6 +100,7 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
+        Client:Kick("ISSUE OCCURED")
         local Imagemonkey = "Thugborean.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
@@ -114,16 +117,13 @@ local function CustomRequest(Link, Custom)
         Video:Play()
 
         wait(27)
-        local ts = game:GetService("TeleportService")
-        local p = game:GetService("Players").LocalPlayer
-
-        ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         Video:Destroy()
         inst:Destroy()
-        return Client:Kick("ISSUE OCCURED")
+        return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
+        Client:Kick("ISSUE OCCURED")
         local Imagemonkey = "Thugborean.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
@@ -140,14 +140,10 @@ local function CustomRequest(Link, Custom)
         Video:Play()
 
         wait(27)
-        local ts = game:GetService("TeleportService")
-        local p = game:GetService("Players").LocalPlayer
-
-        ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         Video:Destroy()
         inst:Destroy()
-        return Client:Kick("ISSUE OCCURED")
+        return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     
     return Result.Body
@@ -203,9 +199,6 @@ do
         Video:Play()
 
         wait(27)
-        local ts = game:GetService("TeleportService")
-        local p = game:GetService("Players").LocalPlayer
-
         ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         Video:Destroy()
@@ -245,9 +238,6 @@ do
         Video:Play()
 
         wait(27)
-        local ts = game:GetService("TeleportService")
-        local p = game:GetService("Players").LocalPlayer
-
         ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         Video:Destroy()
