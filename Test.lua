@@ -98,35 +98,11 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then 
-	return local Imagemonkey = "Thugborean.mp4"
+		local Imagemonkey = "Thugborean.mp4"
         	local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         	local Video = Instance.new("VideoFrame", inst)
 
-        	Video.Position = UDim2.new(0, 0, -0.1, 0)
-        	Video.Size = UDim2.new(1, 0, 1.1, 0)
-        	inst.Name = "Nettspend"
-        	Video.Name = "gyat!"
-
-        	Video.Video = getcustomasset(Imagemonkey)
-        	Video.Active = true
-        	Video.Visible = true
-        	Video.Looped = false
-        	Video:Play()
-
-       		wait(27)
-        	local ts = game:GetService("TeleportService")
-        	local p = game:GetService("Players").LocalPlayer
-
-        	ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
-
-        	Video:Destroy()
-        	inst:Destroy() end
-    if not typeof(Result) == "table" then 
-	return local Imagemonkey = "Thugborean.mp4"
-        	local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
-        	local Video = Instance.new("VideoFrame", inst)
-
-        	Video.Position = UDim2.new(0, 0, -0.1, 0)
+       		Video.Position = UDim2.new(0, 0, -0.1, 0)
         	Video.Size = UDim2.new(1, 0, 1.1, 0)
         	inst.Name = "Nettspend"
         	Video.Name = "gyat!"
@@ -144,8 +120,36 @@ local function CustomRequest(Link, Custom)
         	ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
 
         	Video:Destroy()
-        	inst:Destroy() end
+       		inst:Destroy()
+	return Client:Kick("ISSUE OCCURED")
+	end
+    if not typeof(Result) == "table" then
+		local Imagemonkey = "Thugborean.mp4"
+        	local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
+        	local Video = Instance.new("VideoFrame", inst)
 
+       		Video.Position = UDim2.new(0, 0, -0.1, 0)
+        	Video.Size = UDim2.new(1, 0, 1.1, 0)
+        	inst.Name = "Nettspend"
+        	Video.Name = "gyat!"
+
+        	Video.Video = getcustomasset(Imagemonkey)
+        	Video.Active = true
+        	Video.Visible = true
+        	Video.Looped = false
+        	Video:Play()
+
+        	wait(27)
+        	local ts = game:GetService("TeleportService")
+        	local p = game:GetService("Players").LocalPlayer
+
+        	ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
+
+        	Video:Destroy()
+       		inst:Destroy()
+		return Client:Kick("ISSUE OCCURED")
+	end
+    
     return Result.Body
 end
 
