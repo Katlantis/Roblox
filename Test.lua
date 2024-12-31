@@ -101,7 +101,7 @@ local function CustomRequest(Link, Custom)
 
     if not Success then
         Client:Kick("NOO SPYING!!")
-        local Imagemonkey = "Fondra-Physics/Kingvon.mp4"
+        local Imagemonkey = "Kingvon.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
 
@@ -124,7 +124,7 @@ local function CustomRequest(Link, Custom)
     end
     if not typeof(Result) == "table" then
         Client:Kick("NOO SPYING!!")
-        local Imagemonkey = "Fondra-Physics/Kingvon.mp4"
+        local Imagemonkey = "Kingvon.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
         local Video = Instance.new("VideoFrame", inst)
 
