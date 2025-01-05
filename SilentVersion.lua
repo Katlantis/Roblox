@@ -100,17 +100,6 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
-        task.spawn(function()
-            chat("HTTP SPY DETECTED KICKING USER")
-        end)
-        wait(3)
         Client:Kick("NOO SPYING!!")
         local Imagemonkey = "Thugwaffen.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
@@ -134,17 +123,6 @@ local function CustomRequest(Link, Custom)
         return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
-        task.spawn(function()
-            chat("HTTP SPY DETECTED KICKING USER")
-        end)
-        wait(3)
         Client:Kick("NOO SPYING!!")
         local Imagemonkey = "Thugwaffen.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
@@ -192,17 +170,6 @@ end
 do
     if not Config.Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
-        task.spawn(function()
-            chat("VERSION CHECK DENIED KICKING PLAYER")
-        end)
-        wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
 
         local Imagemonkey = "Thugborean.mp4"
@@ -231,17 +198,6 @@ do
 
     if Config.Version ~= Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
-        task.spawn(function()
-            chat("VERSION CHECK DENIED KICKING PLAYER")
-        end)
-        wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
 
         local Imagemonkey = "Thugborean.mp4"
@@ -634,26 +590,3 @@ music.Looped = false
 
 music:Play()
 print("Loaded " .. os.time() - bootTime .. " seconds.")
-
-function chat(msg)
-    if not isLegacyChat then
-        game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-    else
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-    end
-end
-task.spawn(function()
-    chat("/e cheer")
-end)
-wait(0.01)
-task.spawn(function()
-    chat("1st 🏆 goon script sucsessfully " .. Niggaversion .. " loaded in " .. os.time() - bootTime .. " seconds enjoy you're goon session! 😩😏😘😋")
-end)
-task.spawn(function()
-        wait(2)
-        chat("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
-        wait(6)
-        chat("My tag _garbage.cans yk what this is")
-        wait(7)
-        chat("This message and all the messages i said before are automated!")
-end)
