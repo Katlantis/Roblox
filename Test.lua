@@ -271,10 +271,10 @@ do
     Downloads                                                   = {
         Modules                                                 = {
             ["FX.rbxm"]                                         = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Boobs%20v2/Modules/FX.rbxm",
-            ["Apply.rbxm"]                                      = "https://cdn.discordapp.com/attachments/1291889580068573184/1323457158037114880/Apply.rbxm?ex=67749507&is=67734387&hm=31470424d04be40c2c653fc239aaef1536abb6ae7a50a34f1820c6f3e24fc7f7&",
+            ["Apply.rbxm"]                                      = "https://cdn.discordapp.com/attachments/1291889580068573184/1323457158037114880/Apply.rbxm?ex=677b2c87&is=6779db07&hm=9d2822d6ba205655bdf5f74cad0cee12f3f42cbcb0f8d6d7eef9fbbd62f2c6c8&",
             ["Gender.rbxm"]                                     = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Boobs%20v2/Modules/Gender.rbxm",
             ["Spring.rbxm"]                                     = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Boobs%20v2/Modules/Spring.rbxm",
-            ["Assets.rbxm"]                                     = "https://cdn.discordapp.com/attachments/1291889580068573184/1323457158481973319/Assets.rbxm?ex=67749507&is=67734387&hm=08c9a628783455a6841f4e01f7ebc0b6e45e4a5bae5719d70215016911c0f5ef&",
+            ["Assets.rbxm"]                                     = "https://cdn.discordapp.com/attachments/1291889580068573184/1323457158481973319/Assets.rbxm?ex=677b2c87&is=6779db07&hm=c7ece679c39ee8ce6e38fcab77ec531f15b41610b6404debd1c35de9ad0408bb&",
         },
 
         ["Nipple"]                                              = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Boobs%20v2/Nipple.png",
