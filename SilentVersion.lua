@@ -248,19 +248,6 @@ do
         })
         print("Version check passed")
         print("DOWNLOADING FILES!")
-
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
-        task.spawn(function()
-            chat("Version check passed")
-            wait(2)
-            chat("DOWNLOADING FILES!")
-        end)
         
         local Imagemonkey = "Sigmaland.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
