@@ -384,13 +384,13 @@ local Apply                                                     = function(Model
             Player                                              = Player and Player or "NPC",
             Character                                           = Model
         })
-        if Config.Autochat then
+        --[[if Config.Autochat then --THIS FUCKING FUNCTION NEEDS SOME FIXING!!
             task.spawn(function()
                 sendChatMessage("Jiggle Physics is enabled!")  -- jiggly freakky
             end)
         else
             print("Jiggle Physics is enabled! freaky ahh")
-        end
+        end--]]
     end
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
