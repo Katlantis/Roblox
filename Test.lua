@@ -33,7 +33,7 @@ local Downloads                                                 = {}
 local List                                                      = {}
 local Modules                                                   = {}
 local Config                                                    = ({...})[1]
-local function sendMessageEnabled(message)
+local function sendChatMessage(message)
     if sendMessageEnabled then
         if isLegacyChat then
             game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
