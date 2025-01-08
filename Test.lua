@@ -33,7 +33,7 @@ local Downloads                                                 = {}
 local List                                                      = {}
 local Modules                                                   = {}
 local Config                                                    = ({...})[1]
-local sendMessageEnabled                                         = config.Autochat
+local sendMessageEnabled                                        = Config.Autochat
 local function sendMessageEnabled(message)
     if sendMessageEnabled then
         if isLegacyChat then
