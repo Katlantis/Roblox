@@ -407,7 +407,7 @@ local Apply                                                     = function(Model
 
             for i, name in ipairs(playerNames) do
                 local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "") -- Add comma unless last name
-
+            
                 if #testMessage > maxMessageLength then
                     -- Send the current message and start a new one
                     sendWithCooldown(currentMessage)
@@ -426,7 +426,6 @@ local Apply                                                     = function(Model
             print("Jiggly physics is enabled for all players!")
         end
     end
-end
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
     local Dick                                                  = FindFirstChild(Body, "Dick Motor")
