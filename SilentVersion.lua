@@ -1,4 +1,4 @@
-local startTime = os.clock()
+local startTime = os.clock() --Timer
 
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
@@ -587,17 +587,35 @@ local elapsedTime = os.clock() - startTime
 
 -- Grade the execution time
 local grade
-if elapsedTime < 0.01 then
-    grade = "A"  -- Excellent
-elseif elapsedTime < 0.05 then
-    grade = "B"  -- Good
-elseif elapsedTime < 0.1 then
-    grade = "C"  -- Average
-elseif elapsedTime < 0.5 then
-    grade = "D"  -- Slow
+if elapsedTime < 0.6 then
+    grade = "👑"  -- Godly (under 1 second)
+    warn("How the fuck???")
+elseif elapsedTime < 1 then
+    grade = "A"  -- Excellent (under 1 second)
+    warn("Excellent!!!🔥🔥")
+elseif elapsedTime < 5 then
+    grade = "B"  -- Good (under 5 seconds)
+    warn("Very suprised 😲🤯")
+elseif elapsedTime < 10 then
+    grade = "C"  -- Average (under 10 seconds)
+    warn("Decent gradescore")
+elseif elapsedTime < 20 then
+    grade = "D"  -- Slow (under 20 seconds)
+    warn("Average size")
+elseif elapsedTime < 30 then
+    grade = "E"  -- Very Slow (under 30 seconds)
+    warn("Turtle speed 🐢")
+elseif elapsedTime < 40 then
+    grade = "F"  -- Extremely Slow (30 seconds or more)
+    warn("F on grades is crazy work😂")
+elseif elapsedTime< 60 then
+    grade = "💀" -- How?
+    warn("Slow ass script")
 else
-    grade = "F"  -- Very Slow
+    grade = "☠️" -- HOW???
+    warn("Really slow ass script 😭")
 end
 
+-- Print results
 print("Elapsed time: " .. elapsedTime .. " seconds")
 print("Performance grade: " .. grade)
