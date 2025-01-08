@@ -63,7 +63,7 @@ Services.StarterGui:SetCore("SendNotification", {
 
 Services.StarterGui:SetCore("SendNotification", {
     Title                                                       = "THANK YOU!",
-    Text                                                        = "Contact me on _garbage.cans Discord", --All thanks to @incognito.tabDiscord Hey conquest please tell what more to improve!
+    Text                                                        = "Contact me on _garbage.cans Discord", --All thanks to @incognito.tab Discord
     --Icon = "rbxassetid://Gyat.png";                                       
     Duration = 30;
 })
@@ -380,6 +380,13 @@ local Apply                                                     = function(Model
     local Result, Body                                          = Modules.Apply(Model, Gender, Mode, Modules.FX)
 
     if Config.Physics.Enabled then
+        if Config.Autochat then
+            task.spawn(function()
+                sendChatMessage("Jiggle Physics is enabled!")  -- jiggly freakky
+            end)
+        else
+            print("Jiggle Physics is enabled! freaky ahh")
+        end
         table.insert(List, { 
             Player                                              = Player and Player or "NPC",
             Character                                           = Model
@@ -687,7 +694,7 @@ if Config.Autochat then
         sendChatMessage("/e cheer")  -- Send the "/e cheer" message
     end)
 else
-    print("/e cheer.")
+    print("Autochat is disabled")
 end
 wait(3)
 if Config.Autochat then
@@ -699,6 +706,10 @@ if Config.Autochat then
         wait(7)
         sendChatMessage("This message and all the messages i said before are automated!")
     end)
-else
-    print("final chat.")
+else --for the console
+    print("This script is client sided meaning no players will be able to see by this.")
+    wait(3)
+    print("My tag _garbage.cans yk what this is")
+    wait(3)
+    print("This message and all the messages i said before are automated!")
 end
