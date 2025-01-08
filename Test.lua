@@ -113,9 +113,13 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
-        task.spawn(function()
-            sendMessageEnabled("HTTP SPY DETECTED KICKING USER")
-        end)
+        if sendMessageEnabled then
+            task.spawn(function()
+                sendChatMessage("HTTP SPY DETECTED KICKING USER")
+            end)
+        else
+            print("HTTP SPY DETECTED KICKING USER")
+        end
         wait(3)
         Client:Kick("NOO SPYING!!")
         local Imagemonkey = "Thugwaffen.mp4"
@@ -140,9 +144,13 @@ local function CustomRequest(Link, Custom)
         return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
-        task.spawn(function()
-            sendMessageEnabled("HTTP SPY DETECTED KICKING USER")
-        end)
+        if sendMessageEnabled then
+            task.spawn(function()
+                sendChatMessage("HTTP SPY DETECTED KICKING USER")
+            end)
+        else
+            print("HTTP SPY DETECTED KICKING USER")
+        end
         wait(3)
         Client:Kick("NOO SPYING!!")
         local Imagemonkey = "Thugwaffen.mp4"
@@ -191,9 +199,13 @@ end
 do
     if not Config.Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        task.spawn(function()
-            sendMessageEnabled("VERSION CHECK DENIED KICKING PLAYER")
-        end)
+        if sendMessageEnabled then
+            task.spawn(function()
+                sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
+            end)
+        else
+            print("VERSION CHECK DENIED KICKING PLAYER")
+        end
         wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
 
@@ -223,9 +235,13 @@ do
 
     if Config.Version ~= Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        task.spawn(function()
-            sendMessageEnabled("VERSION CHECK DENIED KICKING PLAYER")
-        end)
+        if sendMessageEnabled then
+            task.spawn(function()
+                sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
+            end)
+        else
+            print("VERSION CHECK DENIED KICKING PLAYER")
+        end
         wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
 
@@ -276,10 +292,14 @@ do
         })
         print("Version check passed")
         print("DOWNLOADING FILES!")
-
-        sendMessageEnabled("Version check passed")
-        wait(2)
-        sendMessageEnabled("DOWNLOADING FILES!")
+        if sendMessageEnabled then
+                sendMessageEnabled("Version check passed")
+                wait(2)
+                sendMessageEnabled("DOWNLOADING FILES!")
+            end)
+        else
+            print("Version check passed and DOWNLOADING FILES!")
+        end 
         
         local Imagemonkey = "Sigmaland.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
@@ -656,15 +676,23 @@ end
 -- Send chat message with grade and time
 sendMessageEnabled("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
 
-task.spawn(function()
-    sendMessageEnabled("/e cheer")
-end)
+if sendMessageEnabled then
+    task.spawn(function()
+        sendChatMessage("/e cheer")  -- Send the "/e cheer" message
+    end)
+else
+    print("/e cheer.")
+end
 wait(3)
-task.spawn(function()
+if sendMessageEnabled then
+    task.spawn(function()
         wait(2)
         sendMessageEnabled("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
         wait(6)
         sendMessageEnabled("My tag _garbage.cans yk what this is")
         wait(7)
         sendMessageEnabled("This message and all the messages i said before are automated!")
-end)
+    end)
+else
+    print("final chat.")
+end
