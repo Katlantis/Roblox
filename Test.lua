@@ -1,14 +1,8 @@
 local startTime = os.clock() --timer
+
 local ChatService = game:GetService("Chat")
 local TextChatService = game:GetService("TextChatService")
 local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
-local function sendChatMessage(message)
-    if isLegacyChat then
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
-    else
-        TextChatService.TextChannels.RBXGeneral:SendAsync(message)
-    end
-end
 local ts = game:GetService("TeleportService")
 local p = game:GetService("Players").LocalPlayer
 local Niggaversion     = "v2.1.5 Private Beta unreleased"
@@ -39,6 +33,19 @@ local Downloads                                                 = {}
 local List                                                      = {}
 local Modules                                                   = {}
 local Config                                                    = ({...})[1]
+local sendMessageEnabled                                         = config.Autochat
+local function sendMessageEnabled(message)
+    if sendMessageEnabled then
+        if isLegacyChat then
+            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+        else
+            TextChatService.TextChannels.RBXGeneral:SendAsync(message)
+        end
+        print("Sending chat message: " .. message)  -- This prints the message, replace with actual send logic
+    else
+        print("Autochat is disabled, message not sent.")
+    end
+end
 
 local Version                                                   = "V2"
 local Client                                                    = Services.Players.LocalPlayer
@@ -107,7 +114,7 @@ local function CustomRequest(Link, Custom)
 
     if not Success then
         task.spawn(function()
-            sendChatMessage("HTTP SPY DETECTED KICKING USER")
+            sendMessageEnabled("HTTP SPY DETECTED KICKING USER")
         end)
         wait(3)
         Client:Kick("NOO SPYING!!")
@@ -134,7 +141,7 @@ local function CustomRequest(Link, Custom)
     end
     if not typeof(Result) == "table" then
         task.spawn(function()
-            sendChatMessage("HTTP SPY DETECTED KICKING USER")
+            sendMessageEnabled("HTTP SPY DETECTED KICKING USER")
         end)
         wait(3)
         Client:Kick("NOO SPYING!!")
@@ -185,7 +192,7 @@ do
     if not Config.Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
         task.spawn(function()
-            sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
+            sendMessageEnabled("VERSION CHECK DENIED KICKING PLAYER")
         end)
         wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
@@ -217,7 +224,7 @@ do
     if Config.Version ~= Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
         task.spawn(function()
-            sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
+            sendMessageEnabled("VERSION CHECK DENIED KICKING PLAYER")
         end)
         wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
@@ -270,11 +277,9 @@ do
         print("Version check passed")
         print("DOWNLOADING FILES!")
 
-        task.spawn(function()
-            sendChatMessage("Version check passed")
-            wait(2)
-            sendChatMessage("DOWNLOADING FILES!")
-        end)
+        sendMessageEnabled("Version check passed")
+        wait(2)
+        sendMessageEnabled("DOWNLOADING FILES!")
         
         local Imagemonkey = "Sigmaland.mp4"
         local inst = Instance.new("ScreenGui",game.Players.LocalPlayer.PlayerGui)
@@ -649,23 +654,17 @@ else
 end
 
 -- Send chat message with grade and time
-if config.Autochat then
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
-    end)
-else
-    print("Chat message sending is disabled.")
-end
+sendMessageEnabled("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
 
 task.spawn(function()
-    sendChatMessage("/e cheer")
+    sendMessageEnabled("/e cheer")
 end)
 wait(3)
 task.spawn(function()
         wait(2)
-        sendChatMessage("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
+        sendMessageEnabled("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
         wait(6)
-        sendChatMessage("My tag _garbage.cans yk what this is")
+        sendMessageEnabled("My tag _garbage.cans yk what this is")
         wait(7)
-        sendChatMessage("This message and all the messages i said before are automated!")
+        sendMessageEnabled("This message and all the messages i said before are automated!")
 end)
