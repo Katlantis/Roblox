@@ -1,4 +1,5 @@
 local startTime = os.clock()
+
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
@@ -577,4 +578,26 @@ music.Looped = false
 
 music:Play()
 
-print("Elapsed time: " .. (os.clock() - startTime))
+
+for i = 1, 1000000 do
+  local temp = i * 2
+end
+
+local elapsedTime = os.clock() - startTime
+
+-- Grade the execution time
+local grade
+if elapsedTime < 0.01 then
+    grade = "A"  -- Excellent
+elseif elapsedTime < 0.05 then
+    grade = "B"  -- Good
+elseif elapsedTime < 0.1 then
+    grade = "C"  -- Average
+elseif elapsedTime < 0.5 then
+    grade = "D"  -- Slow
+else
+    grade = "F"  -- Very Slow
+end
+
+print("Elapsed time: " .. elapsedTime .. " seconds")
+print("Performance grade: " .. grade)
