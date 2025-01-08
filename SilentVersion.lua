@@ -1,3 +1,4 @@
+local bootTime     = os.clock()
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
@@ -147,7 +148,7 @@ local function CustomRequest(Link, Custom)
     
     return Result.Body
 end
-local bootTime     = os.clock()
+
 local function DiscordJoin(Code)
     request({
         Url                                                     = "http://127.0.0.1:6463/rpc?v=1",
@@ -575,5 +576,5 @@ music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
 music.Looped = false
 
 music:Play()
-local deltaTime = os.clock() - startTime
+local deltaTime = os.clock() - bootTime
 return print("Loaded script " .. deltaTime .. " seconds.")
