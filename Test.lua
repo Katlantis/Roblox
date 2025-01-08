@@ -384,13 +384,46 @@ local Apply                                                     = function(Model
             Player                                              = Player and Player or "NPC",
             Character                                           = Model
         })
-        --[[if Config.Autochat then --THIS FUCKING FUNCTION NEEDS SOME FIXING!!
+        if Config.Autochat then
             task.spawn(function()
-                sendChatMessage("Jiggle Physics is enabled!")  -- jiggly freakky
+                -- Collect all player names in the server
+                local playerNames = {}
+                for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                    table.insert(playerNames, player.Name)
+                end
+        
+                -- Prefix of the message
+                local messagePrefix = "Added jiggly physics to: "
+                local maxMessageLength = 200
+                local currentMessage = messagePrefix
+                
+                -- Function to send message with a cooldown
+                local function sendWithCooldown(message)
+                    sendChatMessage(message)
+                    task.wait(3)  -- 3-second cooldown to prevent spam
+                end
+        
+                -- Build the message and split it into chunks to respect the character limit
+                for i, name in ipairs(playerNames) do
+                    local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "") -- Add a comma unless it's the last player
+                    
+                    if #testMessage > maxMessageLength then
+                        -- If the message exceeds the limit, send the current message and start a new one
+                        sendWithCooldown(currentMessage)
+                        currentMessage = messagePrefix .. name .. ", "  -- Start a new message with the next player's name
+                    else
+                        currentMessage = testMessage
+                    end
+                end
+                
+                -- Send the remaining message if any names were added
+                if #currentMessage > #messagePrefix then
+                    sendWithCooldown(currentMessage)
+                end
             end)
         else
             print("Jiggle Physics is enabled! freaky ahh")
-        end--]]
+        end
     end
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
