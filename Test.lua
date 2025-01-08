@@ -1,5 +1,5 @@
 local startTime = os.clock() --timer
-
+local sendMessageEnabled = Config.Autochat
 local ChatService = game:GetService("Chat")
 local TextChatService = game:GetService("TextChatService")
 local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
@@ -33,7 +33,6 @@ local Downloads                                                 = {}
 local List                                                      = {}
 local Modules                                                   = {}
 local Config                                                    = ({...})[1]
-local sendMessageEnabled                                        = Config.Autochat
 local function sendMessageEnabled(message)
     if sendMessageEnabled then
         if isLegacyChat then
@@ -113,7 +112,7 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
-        if sendMessageEnabled then
+        if Config.Autochat then
             task.spawn(function()
                 sendChatMessage("HTTP SPY DETECTED KICKING USER")
             end)
@@ -144,7 +143,7 @@ local function CustomRequest(Link, Custom)
         return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
-        if sendMessageEnabled then
+        if Config.Autochat then
             task.spawn(function()
                 sendChatMessage("HTTP SPY DETECTED KICKING USER")
             end)
@@ -199,7 +198,7 @@ end
 do
     if not Config.Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        if sendMessageEnabled then
+        if Config.Autochat then
             task.spawn(function()
                 sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
             end)
@@ -235,7 +234,7 @@ do
 
     if Config.Version ~= Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        if sendMessageEnabled then
+        if Config.Autochat then
             task.spawn(function()
                 sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
             end)
@@ -292,10 +291,11 @@ do
         })
         print("Version check passed")
         print("DOWNLOADING FILES!")
-        if sendMessageEnabled then
-                sendMessageEnabled("Version check passed")
+        if Config.Autochat then
+            task.spawn(function()
+                sendChatMessage("Version check passed")
                 wait(2)
-                sendMessageEnabled("DOWNLOADING FILES!")
+                sendChatMessage("DOWNLOADING FILES!")
             end)
         else
             print("Version check passed and DOWNLOADING FILES!")
@@ -674,9 +674,15 @@ else
 end
 
 -- Send chat message with grade and time
-sendMessageEnabled("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+if Config.Autochat then
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+    end)
+else
+    print("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+end
 
-if sendMessageEnabled then
+if Config.Autochat then
     task.spawn(function()
         sendChatMessage("/e cheer")  -- Send the "/e cheer" message
     end)
@@ -684,14 +690,14 @@ else
     print("/e cheer.")
 end
 wait(3)
-if sendMessageEnabled then
+if Config.Autochat then
     task.spawn(function()
         wait(2)
-        sendMessageEnabled("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
+        sendChatMessage("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
         wait(6)
-        sendMessageEnabled("My tag _garbage.cans yk what this is")
+        sendChatMessage("My tag _garbage.cans yk what this is")
         wait(7)
-        sendMessageEnabled("This message and all the messages i said before are automated!")
+        sendChatMessage("This message and all the messages i said before are automated!")
     end)
 else
     print("final chat.")
