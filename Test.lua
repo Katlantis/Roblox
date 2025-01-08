@@ -1,8 +1,14 @@
 local bootTime     = os.time()
-local cloneref = cloneref or function(o) return o end
-local ChatService = cloneref(game:GetService("Chat"))
-local TextChatService = cloneref(game:GetService("TextChatService"))
+local ChatService = game:GetService("Chat")
+local TextChatService = game:GetService("TextChatService")
 local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
+local function sendChatMessage(message)
+    if isLegacyChat then
+        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+    else
+        TextChatService.TextChannels.RBXGeneral:SendAsync(message)
+    end
+end
 local ts = game:GetService("TeleportService")
 local p = game:GetService("Players").LocalPlayer
 local Niggaversion     = "v2.1.5 Private Beta unreleased"
@@ -100,15 +106,8 @@ local function CustomRequest(Link, Custom)
     })
 
     if not Success then
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
         task.spawn(function()
-            chat("HTTP SPY DETECTED KICKING USER")
+            sendChatMessage("HTTP SPY DETECTED KICKING USER")
         end)
         wait(3)
         Client:Kick("NOO SPYING!!")
@@ -134,15 +133,8 @@ local function CustomRequest(Link, Custom)
         return ts:TeleportToPlaceInstance(game.PlaceId, game.JobId, p)
     end
     if not typeof(Result) == "table" then
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
         task.spawn(function()
-            chat("HTTP SPY DETECTED KICKING USER")
+            sendChatMessage("HTTP SPY DETECTED KICKING USER")
         end)
         wait(3)
         Client:Kick("NOO SPYING!!")
@@ -192,15 +184,8 @@ end
 do
     if not Config.Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
         task.spawn(function()
-            chat("VERSION CHECK DENIED KICKING PLAYER")
+            sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
         end)
         wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
@@ -231,15 +216,8 @@ do
 
     if Config.Version ~= Version then
         if isfolder("Fondra-Physics") then delfolder("Fondra-Physics") end
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
         task.spawn(function()
-            chat("VERSION CHECK DENIED KICKING PLAYER")
+            sendChatMessage("VERSION CHECK DENIED KICKING PLAYER")
         end)
         wait(3)
         Client:Kick("Fondra Physics\nThis is out of date, please get the new loader.\nDiscord.gg/kxxDkhHzzN")
@@ -279,7 +257,6 @@ do
 
         ["Nipple"]                                              = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Boobs%20v2/Nipple.png",
         ["Loaded.mp3"]                                          = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Loaded.mp3",
-        ["Gyat.png"]                                            = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Gyat.png",
         ["Thugborean.mp4"]                                      = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Thugborean.mp4",
         ["Sigmaland.mp4"]                                       = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Sigmaland.mp4",
         ["Thugwaffen.mp4"]                                       = "https://github.com/Katlantis/Roblox/raw/refs/heads/main/Thugwaffen.mp4",
@@ -293,17 +270,10 @@ do
         print("Version check passed")
         print("DOWNLOADING FILES!")
 
-        function chat(msg)
-            if not isLegacyChat then
-                game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-            else
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-            end
-        end
         task.spawn(function()
-            chat("Version check passed")
+            sendChatMessage("Version check passed")
             wait(2)
-            chat("DOWNLOADING FILES!")
+            sendChatMessage("DOWNLOADING FILES!")
         end)
         
         local Imagemonkey = "Sigmaland.mp4"
@@ -635,25 +605,18 @@ music.Looped = false
 music:Play()
 print("Loaded " .. os.time() - bootTime .. " seconds.")
 
-function chat(msg)
-    if not isLegacyChat then
-        game.TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-    else
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
-    end
-end
 task.spawn(function()
-    chat("/e cheer")
+    sendChatMessage("/e cheer")
 end)
 wait(0.01)
 task.spawn(function()
-    chat("1st 🏆 goon script sucsessfully " .. Niggaversion .. " loaded in " .. os.time() - bootTime .. " seconds enjoy you're goon session! 😩😏😘😋")
+    sendChatMessage("1st 🏆 goon script sucsessfully " .. Niggaversion .. " loaded in " .. os.time() - bootTime .. " seconds enjoy you're goon session! 😩😏😘😋")
 end)
 task.spawn(function()
         wait(2)
-        chat("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
+        sendChatMessage("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
         wait(6)
-        chat("My tag _garbage.cans yk what this is")
+        sendChatMessage("My tag _garbage.cans yk what this is")
         wait(7)
-        chat("This message and all the messages i said before are automated!")
+        sendChatMessage("This message and all the messages i said before are automated!")
 end)
