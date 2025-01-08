@@ -381,50 +381,16 @@ local Apply                                                     = function(Model
 
     if Config.Physics.Enabled then
         table.insert(List, { 
-            Player = Player and Player or "NPC",
-            Character = Model
+            Player                                              = Player and Player or "NPC",
+            Character                                           = Model
         })
-
-        -- Autochat feature to send messages
-        if Config.Autochat then
-            -- Collect all player names
-            local playerNames = {}
-            for _, player in pairs(Services.Players:GetPlayers()) do
-                table.insert(playerNames, player.Name)
-            end
-
-            -- Prepare and send messages with cooldown
-            local messagePrefix = "Added jiggly physics to: "
-            local maxMessageLength = 200
-            local currentMessage = messagePrefix
-
-            local function sendWithCooldown(message)
-                task.spawn(function()
-                    sendChatMessage(message)
-                    task.wait(3) -- 3-second cooldown to avoid spam
-                end)
-            end
-
-            for i, name in ipairs(playerNames) do
-                local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "") -- Add comma unless last name
-            
-                if #testMessage > maxMessageLength then
-                    -- Send the current message and start a new one
-                    sendWithCooldown(currentMessage)
-                    currentMessage = messagePrefix .. name .. ", " -- Start a new message
-                else
-                    currentMessage = testMessage
-                end
-            end
-
-            -- Send any leftover names
-            if #currentMessage > #messagePrefix then
-                sendWithCooldown(currentMessage)
-            end
+        --[[if Config.Autochat then --THIS FUCKING FUNCTION NEEDS SOME FIXING!!
+            task.spawn(function()
+                sendChatMessage("Jiggle Physics is enabled!")  -- jiggly freakky
+            end)
         else
-            -- Print message to the console if Autochat is disabled
-            print("Jiggly physics is enabled for all players!")
-        end
+            print("Jiggle Physics is enabled! freaky ahh")
+        end--]]
     end
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
@@ -569,7 +535,7 @@ end
 
 getgenv()["Discord.gg/kxxDkhHzzN"]["RunService"]                = Services.RunService.RenderStepped:Connect(Render)
     
-if Game.CreatorId == 5212858 then --this is for deepwoken
+if Game.CreatorId == 5212858 then
     for Index, Object in next, Services.Workspace.Live:GetChildren() do
         local Character                                         = Object
         local Name                                              = Object.Name
