@@ -1,8 +1,4 @@
 local startTime = os.clock() --timer
-local sendMessageEnabled = Config.Autochat
-local ChatService = game:GetService("Chat")
-local TextChatService = game:GetService("TextChatService")
-local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
 local ts = game:GetService("TeleportService")
 local p = game:GetService("Players").LocalPlayer
 local Niggaversion     = "v2.1.5 Private Beta unreleased"
@@ -33,6 +29,10 @@ local Downloads                                                 = {}
 local List                                                      = {}
 local Modules                                                   = {}
 local Config                                                    = ({...})[1]
+local ChatService = game:GetService("Chat")
+local TextChatService = game:GetService("TextChatService")
+local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
+local sendMessageEnabled = Config.Autochat
 local function sendChatMessage(message)
     if sendMessageEnabled then
         if isLegacyChat then
