@@ -649,9 +649,13 @@ else
 end
 
 -- Send chat message with grade and time
-task.spawn(function()
-    sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
-end)
+if config.Autochat then
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+    end)
+else
+    print("Chat message sending is disabled.")
+end
 
 task.spawn(function()
     sendChatMessage("/e cheer")
