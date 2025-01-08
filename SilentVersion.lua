@@ -575,5 +575,4 @@ music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
 music.Looped = false
 
 music:Play()
-local deltaTime = os.time() - bootTime
-return print("Loaded script " .. deltaTime .. " seconds.")
+print("Loaded script " .. os.time() - bootTime .. " seconds.")
