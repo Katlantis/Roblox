@@ -1,3 +1,4 @@
+local bootTime     = os.clock()
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
