@@ -1,4 +1,3 @@
-local bootTime     = os.time()
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
@@ -346,6 +345,7 @@ local Apply                                                     = function(Model
 
     if Config.Debug then
         print(Result.Success, Result.Message)
+        local bootTime     = os.time()
     end
 end
 
@@ -411,9 +411,9 @@ local Render                                                    = function(Delta
             Information.Ass.Spring.Speed                        = Ass.Speed
             Information.Ass.Spring.Damper                       = Ass.Damper
 
-            Information.Pussy.Spring.Target                         = Pussy.Target
+            Information.Pussy.Spring.Target                     = Pussy.Target
             Information.Pussy.Spring.Speed                      = Pussy.Speed
-            Information.Pussy.Spring.Damper                         = Pussy.Damper
+            Information.Pussy.Spring.Damper                     = Pussy.Damper
 
             Information.Dick.Spring.Target                      = Dick.Target
             Information.Dick.Spring.Speed                       = Dick.Speed
