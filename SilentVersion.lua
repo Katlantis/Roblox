@@ -91,7 +91,7 @@ local function CustomRequire(File, Bool)
         return unpack(Data)
     end
 end
-local bootTime     = os.clock()
+
 local function CustomRequest(Link, Custom)
     local Success, Result                                       = pcall(request, Custom or {
         Url                                                     = Link,
@@ -147,7 +147,7 @@ local function CustomRequest(Link, Custom)
     
     return Result.Body
 end
-
+local bootTime     = os.clock()
 local function DiscordJoin(Code)
     request({
         Url                                                     = "http://127.0.0.1:6463/rpc?v=1",
