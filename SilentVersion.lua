@@ -1,3 +1,5 @@
+local startTime = os.clock()
+
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
@@ -345,7 +347,6 @@ local Apply                                                     = function(Model
 
     if Config.Debug then
         print(Result.Success, Result.Message)
-        local bootTime     = os.time()
     end
 end
 
@@ -576,4 +577,5 @@ music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
 music.Looped = false
 
 music:Play()
-print("Loaded script " .. os.time() - bootTime .. " seconds.")
+
+print("Elapsed time: " .. (os.clock() - startTime))
