@@ -384,65 +384,6 @@ local Apply                                                     = function(Model
             Player                                              = Player and Player or "NPC",
             Character                                           = Model
         })
-        if Config.Autochat then
-            task.spawn(function()
-                -- First, send the "WAITING FOR COOLDOWN" message
-                sendChatMessage("WAITING FOR COOLDOWN IN 10 SECONDS")
-                
-                -- Wait for 10 seconds before starting to list players
-                task.wait(10)
-        
-                -- Collect all player names in the server
-                local playerNames = {}
-                for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-                    -- Check if the player has the necessary body parts
-                    local character = player.Character
-                    if character then
-                        local torso = character:FindFirstChild("Torso")
-                        local head = character:FindFirstChild("Head")
-                        local rightArm = character:FindFirstChild("Right Arm")
-                        local leftArm = character:FindFirstChild("Left Arm")
-                        local rightLeg = character:FindFirstChild("Right Leg")
-                        local leftLeg = character:FindFirstChild("Left Leg")
-        
-                        -- Only add player if they have all required body parts
-                        if torso and head and rightArm and leftArm and rightLeg and leftLeg then
-                            table.insert(playerNames, player.Name)
-                        end
-                    end
-                end
-        
-                -- Prefix of the message
-                local messagePrefix = "Added jiggly physics to: "
-                local maxMessageLength = 200
-                local currentMessage = messagePrefix
-                local playerCount = #playerNames
-                local playersPerMessage = 3  -- 3 players per message
-                local currentIndex = 1  -- Track where we are in the player list
-        
-                -- Function to send message with a cooldown
-                local function sendWithCooldown(message)
-                    sendChatMessage(message)
-                    task.wait(5)  -- 5-second cooldown to prevent spam
-                end
-        
-                -- Loop to send messages
-                while currentIndex <= playerCount do
-                    currentMessage = messagePrefix
-                    
-                    -- Add up to 3 player names to the message
-                    for i = currentIndex, math.min(currentIndex + playersPerMessage - 1, playerCount) do
-                        currentMessage = currentMessage .. playerNames[i] .. (i < playerCount and ", " or "")
-                    end
-        
-                    -- Send the message and update the current index
-                    sendWithCooldown(currentMessage)
-                    currentIndex = currentIndex + playersPerMessage  -- Move to the next batch of players
-                end
-            end)
-        else
-            print("Jiggle Physics is enabled! freaky ahh")
-        end        
     end
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
@@ -679,6 +620,71 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
         Apply(New, Gender, Mode)
     end)  
 end)
+
+-- Autochat logic for listing players in the server with a delay
+local function sendJigglyPhysicsMessages()
+    -- Send the initial "WAITING FOR COOLDOWN" message
+    sendChatMessage("WAITING FOR COOLDOWN")
+
+    -- Wait for 10 seconds before starting to list players
+    task.wait(10)
+
+    -- Collect all player names in the server
+    local playerNames = {}
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        local character = player.Character
+        if character then
+            local torso = character:FindFirstChild("Torso")
+            local head = character:FindFirstChild("Head")
+            local rightArm = character:FindFirstChild("Right Arm")
+            local leftArm = character:FindFirstChild("Left Arm")
+            local rightLeg = character:FindFirstChild("Right Leg")
+            local leftLeg = character:FindFirstChild("Left Leg")
+
+            -- Only add player if they have all required body parts
+            if torso and head and rightArm and leftArm and rightLeg and leftLeg then
+                table.insert(playerNames, player.Name)
+            end
+        end
+    end
+
+    -- Message setup
+    local messagePrefix = "Added jiggly physics to: "
+    local maxMessageLength = 200
+    local currentMessage = messagePrefix
+    local playerCount = #playerNames
+    local playersPerMessage = 3  -- Send 3 players per message
+    local currentIndex = 1  -- Keep track of where we are in the list of players
+
+    -- Function to send a message with a cooldown
+    local function sendWithCooldown(message)
+        sendChatMessage(message)
+        task.wait(5)  -- 5-second cooldown between messages
+    end
+
+    -- Loop through players and send messages in batches of 3
+    while currentIndex <= playerCount do
+        currentMessage = messagePrefix
+        
+        -- Add up to 3 player names to the current message
+        for i = currentIndex, math.min(currentIndex + playersPerMessage - 1, playerCount) do
+            currentMessage = currentMessage .. playerNames[i] .. (i < playerCount and ", " or "")
+        end
+
+        -- Send the message and update the current index
+        sendWithCooldown(currentMessage)
+        currentIndex = currentIndex + playersPerMessage  -- Move to the next batch
+    end
+end
+
+-- Call the function when needed
+if Config.Autochat then
+    task.spawn(function()
+        sendJigglyPhysicsMessages()
+    end)
+else
+    print("Autochat is disabled.")
+end
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
 music.Volume = 1
