@@ -380,6 +380,10 @@ local Apply                                                     = function(Model
     local Result, Body                                          = Modules.Apply(Model, Gender, Mode, Modules.FX)
 
     if Config.Physics.Enabled then
+        table.insert(List, { 
+            Player                                              = Player and Player or "NPC",
+            Character                                           = Model
+        })
         if Config.Autochat then
             task.spawn(function()
                 sendChatMessage("Jiggle Physics is enabled!")  -- jiggly freakky
@@ -387,10 +391,6 @@ local Apply                                                     = function(Model
         else
             print("Jiggle Physics is enabled! freaky ahh")
         end
-        table.insert(List, { 
-            Player                                              = Player and Player or "NPC",
-            Character                                           = Model
-        })
     end
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
