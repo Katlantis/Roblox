@@ -1,4 +1,4 @@
-local bootTime     = os.time()
+local startTime = os.clock() --timer
 local ChatService = game:GetService("Chat")
 local TextChatService = game:GetService("TextChatService")
 local isLegacyChat = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
@@ -601,17 +601,73 @@ music.Volume = 1
 music.Name = "Music"
 music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
 music.Looped = false
-
 music:Play()
-print("Loaded " .. os.time() - bootTime .. " seconds.")
+
+local elapsedTime = os.clock() - startTime
+
+local grade
+local roundedTime = string.format("%.2f", elapsedTime)  -- Round to 2 decimal places
+
+if elapsedTime < 0.6 then
+    grade = "👑"  -- Godly (under 0.6 seconds)
+    warn("How the heck???")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 1 then
+    grade = "A"  -- Excellent (under 1 second)
+    warn("Excellent!!!🔥🔥")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 5 then
+    grade = "B"  -- Good (under 5 seconds)
+    warn("Very surprised 😲🤯")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 10 then
+    grade = "C"  -- Average (under 10 seconds)
+    warn("Decent gradescore")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 20 then
+    grade = "D"  -- Slow (under 20 seconds)
+    warn("Average size")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 30 then
+    grade = "E"  -- Very Slow (under 30 seconds)
+    warn("Turtle speed 🐢")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 40 then
+    grade = "F"  -- Extremely Slow (under 40 seconds)
+    warn("F on grades is crazy work😂")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+elseif elapsedTime < 60 then
+    grade = "💀" -- How? (under 60 seconds)
+    warn("Slow ass script")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+else
+    grade = "☠️" -- How??? (60 seconds or more)
+    warn("Really slow ass script 😭")
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
+    end)
+end
 
 task.spawn(function()
     sendChatMessage("/e cheer")
 end)
-wait(0.01)
-task.spawn(function()
-    sendChatMessage("1st 🏆 goon script sucsessfully " .. Niggaversion .. " loaded in " .. os.time() - bootTime .. " seconds enjoy you're goon session! 😩😏😘😋")
-end)
+wait(3)
 task.spawn(function()
         wait(2)
         sendChatMessage("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
