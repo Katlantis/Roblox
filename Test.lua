@@ -298,7 +298,7 @@ do
                 sendChatMessage("DOWNLOADING FILES!")
             end)
         else
-            print("Version check passed and DOWNLOADING FILES!")
+            print("Version check passed DOWNLOADING FILES!")
         end 
         
         local Imagemonkey = "Sigmaland.mp4"
@@ -470,9 +470,9 @@ local Render                                                    = function(Delta
             Information.Ass.Spring.Speed                        = Ass.Speed
             Information.Ass.Spring.Damper                       = Ass.Damper
 
-            Information.Pussy.Spring.Target                         = Pussy.Target
+            Information.Pussy.Spring.Target                     = Pussy.Target
             Information.Pussy.Spring.Speed                      = Pussy.Speed
-            Information.Pussy.Spring.Damper                         = Pussy.Damper
+            Information.Pussy.Spring.Damper                     = Pussy.Damper
 
             Information.Dick.Spring.Target                      = Dick.Target
             Information.Dick.Spring.Speed                       = Dick.Speed
