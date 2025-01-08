@@ -1,4 +1,3 @@
-local bootTime     = os.clock()
 local cloneref = cloneref or function(o) return o end
 local ChatService = cloneref(game:GetService("Chat"))
 local TextChatService = cloneref(game:GetService("TextChatService"))
@@ -576,5 +575,5 @@ music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
 music.Looped = false
 
 music:Play()
-local deltaTime = os.clock() - bootTime
+local deltaTime = os.time() - bootTime
 return print("Loaded script " .. deltaTime .. " seconds.")
