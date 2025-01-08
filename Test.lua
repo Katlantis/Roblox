@@ -605,64 +605,53 @@ music:Play()
 
 local elapsedTime = os.clock() - startTime
 
+local roundedTime = string.format("%.2f", elapsedTime)  -- rounded time to 2 decimals
+local gradeMessage
 local grade
-local roundedTime = string.format("%.2f", elapsedTime)  -- Round to 2 decimal places
 
+-- Determine grade and grade-specific message
 if elapsedTime < 0.6 then
     grade = "👑"  -- Godly (under 0.6 seconds)
     warn("How the heck???")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is 👑. Godly performance! Keep it up!"
 elseif elapsedTime < 1 then
     grade = "A"  -- Excellent (under 1 second)
     warn("Excellent!!!🔥🔥")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is A. Excellent! A+ 🎯"  -- Shortened message
 elseif elapsedTime < 5 then
     grade = "B"  -- Good (under 5 seconds)
     warn("Very surprised 😲🤯")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is B. Good performance! 👍"
 elseif elapsedTime < 10 then
     grade = "C"  -- Average (under 10 seconds)
     warn("Decent gradescore")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is C. Decent performance! 👌"
 elseif elapsedTime < 20 then
     grade = "D"  -- Slow (under 20 seconds)
     warn("Average size")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is D. Could be better! 😐"  -- Shortened message
 elseif elapsedTime < 30 then
     grade = "E"  -- Very Slow (under 30 seconds)
     warn("Turtle speed 🐢")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is E. You're slow! 🐢"
 elseif elapsedTime < 40 then
     grade = "F"  -- Extremely Slow (under 40 seconds)
     warn("F on grades is crazy work😂")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is F. Failing performance! 😩"
 elseif elapsedTime < 60 then
     grade = "💀" -- How? (under 60 seconds)
     warn("Slow ass script")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is 💀. Unbelievably slow! 💀"
 else
     grade = "☠️" -- How??? (60 seconds or more)
     warn("Really slow ass script 😭")
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. elapsedTime .. " seconds. Enjoy your goon session! 😩😏😘😋")
-    end)
+    gradeMessage = "Your grade is ☠️. Terribly slow! ☠️"
 end
+
+-- Send chat message with grade and time
+task.spawn(function()
+    sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+end)
 
 task.spawn(function()
     sendChatMessage("/e cheer")
