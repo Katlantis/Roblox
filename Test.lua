@@ -379,44 +379,71 @@ local Apply                                                     = function(Model
     local Mode                                                  = Mode and Mode or Config.Mode[math.random(1, #Config.Mode)]    
     local Result, Body                                          = Modules.Apply(Model, Gender, Mode, Modules.FX)
 
-    if Config.Autochat then
-        task.spawn(function()
-            -- Collect all player names in the server
-            local playerNames = {}
-            for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-                table.insert(playerNames, player.Name)
-            end
-    
-            -- Prefix of the message
-            local messagePrefix = "Added jiggly physics to: "
-            local maxMessageLength = 200
-            local currentMessage = messagePrefix
-            local playerCount = #playerNames
-            local playersPerMessage = 3  -- 3 players per message
-            
-            -- Function to send message with a cooldown
-            local function sendWithCooldown(message)
-                sendChatMessage(message)
-                task.wait(3)  -- 3-second cooldown to prevent spam
-            end
-            
-            -- Loop through the player names in batches of 3
-            for i = 1, playerCount, playersPerMessage do
-                currentMessage = messagePrefix
+    if Config.Physics.Enabled then
+        table.insert(List, { 
+            Player                                              = Player and Player or "NPC",
+            Character                                           = Model
+        })
+        if Config.Autochat then
+            task.spawn(function()
+                -- First, send the "WAITING FOR COOLDOWN" message
+                sendChatMessage("WAITING FOR COOLDOWN IN 10 SECONDS")
                 
-                -- Add up to 3 player names to the message
-                for j = i, math.min(i + playersPerMessage - 1, playerCount) do
-                    currentMessage = currentMessage .. playerNames[j] .. (j < playerCount and ", " or "")  -- Add a comma unless it's the last name
+                -- Wait for 10 seconds before starting to list players
+                task.wait(10)
+        
+                -- Collect all player names in the server
+                local playerNames = {}
+                for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                    -- Check if the player has the necessary body parts
+                    local character = player.Character
+                    if character then
+                        local torso = character:FindFirstChild("Torso")
+                        local head = character:FindFirstChild("Head")
+                        local rightArm = character:FindFirstChild("Right Arm")
+                        local leftArm = character:FindFirstChild("Left Arm")
+                        local rightLeg = character:FindFirstChild("Right Leg")
+                        local leftLeg = character:FindFirstChild("Left Leg")
+        
+                        -- Only add player if they have all required body parts
+                        if torso and head and rightArm and leftArm and rightLeg and leftLeg then
+                            table.insert(playerNames, player.Name)
+                        end
+                    end
                 end
-                
-                -- Send the message
-                sendWithCooldown(currentMessage)
-            end
-        end)
-    else
-        print("Jiggle Physics is enabled! freaky ahh")
+        
+                -- Prefix of the message
+                local messagePrefix = "Added jiggly physics to: "
+                local maxMessageLength = 200
+                local currentMessage = messagePrefix
+                local playerCount = #playerNames
+                local playersPerMessage = 3  -- 3 players per message
+                local currentIndex = 1  -- Track where we are in the player list
+        
+                -- Function to send message with a cooldown
+                local function sendWithCooldown(message)
+                    sendChatMessage(message)
+                    task.wait(5)  -- 5-second cooldown to prevent spam
+                end
+        
+                -- Loop to send messages
+                while currentIndex <= playerCount do
+                    currentMessage = messagePrefix
+                    
+                    -- Add up to 3 player names to the message
+                    for i = currentIndex, math.min(currentIndex + playersPerMessage - 1, playerCount) do
+                        currentMessage = currentMessage .. playerNames[i] .. (i < playerCount and ", " or "")
+                    end
+        
+                    -- Send the message and update the current index
+                    sendWithCooldown(currentMessage)
+                    currentIndex = currentIndex + playersPerMessage  -- Move to the next batch of players
+                end
+            end)
+        else
+            print("Jiggle Physics is enabled! freaky ahh")
+        end        
     end
-    
 
     local Boobs                                                 = FindFirstChild(Body, "Boobs Motor")
     local Dick                                                  = FindFirstChild(Body, "Dick Motor")
