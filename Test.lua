@@ -658,35 +658,21 @@ local function sendJigglyPhysicsMessages()
         processing = false
     end
 
-    -- Add existing players to the queue
+    -- Add existing players to the queue (players already in the server)
     for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
         table.insert(queuedPlayers, player.Name)
-        getgenv()["Discord.gg/kxxDkhHzzN"][player.Name] = player.CharacterAdded:Connect(function()
-            -- Anti-spam logic for resets
-            if resetData[player.UserId] then
-                local resetInfo = resetData[player.UserId]
-                if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
-                    sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
-                    return -- Block this reset
-                end
-            end
-
-            -- Update reset data
-            resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
-            resetData[player.UserId].count = resetData[player.UserId].count + 1
-            resetData[player.UserId].lastResetTime = tick()
-
-            -- Add player to the queue
-            table.insert(queuedPlayers, player.Name)
-            sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
-        end)
     end
 
     -- Handle new players joining
     getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+        -- Add new player to the queue
         table.insert(queuedPlayers, player.Name)
         sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
-        getgenv()["Discord.gg/kxxDkhHzzN"][player.Name] = player.CharacterAdded:Connect(function()
+    end)
+
+    -- Handle character resets
+    getgenv()["Discord.gg/kxxDkhHzzN"]["CharacterAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function(character)
             -- Anti-spam logic for resets
             if resetData[player.UserId] then
                 local resetInfo = resetData[player.UserId]
@@ -701,9 +687,9 @@ local function sendJigglyPhysicsMessages()
             resetData[player.UserId].count = resetData[player.UserId].count + 1
             resetData[player.UserId].lastResetTime = tick()
 
-            -- Add player to the queue
-            table.insert(queuedPlayers, player.Name)
+            -- Send reset message and add the player to the queue
             sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
+            table.insert(queuedPlayers, player.Name)
         end)
     end)
 
