@@ -711,7 +711,7 @@ else --for the console
     wait(3)
     print("This message and all the messages i said before are automated!")
 end
-
+wait(5)
 -- Anti-spam mechanism settings
 local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
 local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
