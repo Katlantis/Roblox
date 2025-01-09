@@ -625,6 +625,7 @@ end)
 local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
 local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
 local resetData = {}          -- Store player reset data (last reset time and count)
+local newPlayerTimers = {}    -- Store new player join times for cooldowns
 
 -- Function to send chat messages with a cooldown and character limit
 local function sendJigglyPhysicsMessages()
@@ -665,9 +666,14 @@ local function sendJigglyPhysicsMessages()
 
     -- Handle new players joining
     getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+        -- Wait a little bit to ensure the character is fully loaded
+        task.wait(5)  -- Wait for 5 seconds to ensure the character is fully loaded
+
         -- Add new player to the queue
-        table.insert(queuedPlayers, player.Name)
-        sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
+        if player.Character then
+            table.insert(queuedPlayers, player.Name)
+            sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
+        end
     end)
 
     -- Handle character resets
