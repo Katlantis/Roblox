@@ -621,61 +621,71 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
--- Autochat logic for listing players in the server with a delay
+-- Define the function to send messages with a cooldown
 local function sendJigglyPhysicsMessages()
-    -- Send the initial "WAITING FOR COOLDOWN" message
-    sendChatMessage("Listing players on cooldown 10 seconds")
+    -- First, send a message saying "Waiting for cooldown"
+    sendChatMessage("Waiting for cooldown...")
 
-    -- Wait for 10 seconds before starting to list players
+    -- Wait for 10 seconds before starting the list of players
     task.wait(10)
 
     -- Collect all player names in the server
-    local playerNames = {}
-    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-        local character = player.Character
-        if character then
-            local torso = character:FindFirstChild("Torso")
-            local head = character:FindFirstChild("Head")
-            local rightArm = character:FindFirstChild("Right Arm")
-            local leftArm = character:FindFirstChild("Left Arm")
-            local rightLeg = character:FindFirstChild("Right Leg")
-            local leftLeg = character:FindFirstChild("Left Leg")
+    local function collectPlayerNames()
+        local playerNames = {}
+        for _, player in pairs(Services.Players:GetPlayers()) do
+            table.insert(playerNames, player.Name)
+        end
+        return playerNames
+    end
 
-            -- Only add player if they have all required body parts
-            if torso and head and rightArm and leftArm and rightLeg and leftLeg then
-                table.insert(playerNames, player.Name)
+    -- Send messages listing players
+    local function sendMessages(playerNames)
+        local messagePrefix = "Added jiggly physics to: "
+        local maxMessageLength = 200
+        local currentMessage = messagePrefix
+
+        -- Function to send a message with a cooldown
+        local function sendWithCooldown(message)
+            sendChatMessage(message)
+            task.wait(5)  -- 5-second cooldown between messages
+        end
+
+        for i, name in ipairs(playerNames) do
+            local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "") -- Add comma unless it's the last name
+
+            if #testMessage > maxMessageLength then
+                -- Send the current message and start a new one
+                sendWithCooldown(currentMessage)
+                currentMessage = messagePrefix .. name .. ", " -- Start a new message
+            else
+                currentMessage = testMessage
             end
         end
-    end
 
-    -- Message setup
-    local messagePrefix = "Added jiggly physics to: "
-    local maxMessageLength = 200
-    local currentMessage = messagePrefix
-    local playerCount = #playerNames
-    local playersPerMessage = 3  -- Send 3 players per message
-    local currentIndex = 1  -- Keep track of where we are in the list of players
-
-    -- Function to send a message with a cooldown
-    local function sendWithCooldown(message)
-        sendChatMessage(message)
-        task.wait(3)  -- 3-second cooldown between messages
-    end
-
-    -- Loop through players and send messages in batches of 3
-    while currentIndex <= playerCount do
-        currentMessage = messagePrefix
-        
-        -- Add up to 3 player names to the current message
-        for i = currentIndex, math.min(currentIndex + playersPerMessage - 1, playerCount) do
-            currentMessage = currentMessage .. playerNames[i] .. (i < playerCount and ", " or "")
+        -- Send any remaining names in the message
+        if #currentMessage > #messagePrefix then
+            sendWithCooldown(currentMessage)
         end
+    end
 
-        -- Send the message and update the current index
-        sendWithCooldown(currentMessage)
-        currentIndex = currentIndex + playersPerMessage  -- Move to the next batch
+    -- Start by sending messages for all current players
+    local playerNames = collectPlayerNames()
+    sendMessages(playerNames)
+
+    -- Monitor for new players and reset characters
+    Services.Players.PlayerAdded:Connect(function(player)
+        task.wait(1) -- Wait for character to load
+        sendMessages({player.Name})
+    end)
+
+    for _, player in pairs(Services.Players:GetPlayers()) do
+        player.CharacterAdded:Connect(function(character)
+            task.wait(1) -- Ensure character loads fully
+            sendMessages({player.Name})
+        end)
     end
 end
+
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
 music.Volume = 1
