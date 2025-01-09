@@ -674,14 +674,14 @@ local function sendJigglyPhysicsMessages()
     -- Monitor for new players
     Services.Players.PlayerAdded:Connect(function(player)
         task.wait(1) -- Wait for character to load
-        sendMessages({player.Name}, "A new player joined: Added jiggly physics to ")
+        sendMessages({player.Name}, "A new player joined!: Added jiggly physics to ")
     end)
 
     -- Monitor for reset characters
     for _, player in pairs(Services.Players:GetPlayers()) do
         player.CharacterAdded:Connect(function(character)
             task.wait(1) -- Ensure character loads fully
-            sendMessages({player.Name}, "Player reset their character: Added jiggly physics to ")
+            sendMessages({player.Name}, "Player reset their character!: Added jiggly physics to ")
         end)
     end
 end
