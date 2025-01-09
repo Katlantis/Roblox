@@ -782,12 +782,3 @@ else --for the console
     wait(3)
     print("This message and all the messages i said before are automated!")
 end
-
--- Call the function when needed
-if Config.Autochat then
-    task.spawn(function()
-        sendJigglyPhysicsMessages()
-    end)
-else
-    print("Autochat is disabled.")
-end
