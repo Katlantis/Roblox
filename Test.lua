@@ -639,8 +639,7 @@ local function sendJigglyPhysicsMessages()
     end
 
     -- Send messages listing players
-    local function sendMessages(playerNames)
-        local messagePrefix = "Added jiggly physics to: "
+    local function sendMessages(playerNames, messagePrefix)
         local maxMessageLength = 200
         local currentMessage = messagePrefix
 
@@ -670,21 +669,23 @@ local function sendJigglyPhysicsMessages()
 
     -- Start by sending messages for all current players
     local playerNames = collectPlayerNames()
-    sendMessages(playerNames)
+    sendMessages(playerNames, "Added jiggly physics to: ")
 
-    -- Monitor for new players and reset characters
+    -- Monitor for new players
     Services.Players.PlayerAdded:Connect(function(player)
         task.wait(1) -- Wait for character to load
-        sendMessages({player.Name})
+        sendMessages({player.Name}, "A new player joined: Added jiggly physics to ")
     end)
 
+    -- Monitor for reset characters
     for _, player in pairs(Services.Players:GetPlayers()) do
         player.CharacterAdded:Connect(function(character)
             task.wait(1) -- Ensure character loads fully
-            sendMessages({player.Name})
+            sendMessages({player.Name}, "Player reset their character: Added jiggly physics to ")
         end)
     end
 end
+
 
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
