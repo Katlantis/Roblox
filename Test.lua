@@ -621,34 +621,36 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
--- Table to track spawn times
-local playerSpawnTimes = {}
+-- Table to store player load status
+local playerLoadStatus = {}
 
--- Function to handle chat only after sufficient time has passed
-local function handleChat(player)
-    local spawnTime = playerSpawnTimes[player.Name]
-    if spawnTime and (os.time() - spawnTime) >= 5 then
-        -- Time since spawn is greater than 5 seconds, allow chat logic
-        sendChatMessage(player.Name .. " has been fully loaded!")
-    else
-        -- Not enough time has passed, skip or delay the action
-        print(player.Name .. " has not been loaded for 5 seconds yet.")
+-- Function to set a player's load status to true once they are fully loaded
+local function setPlayerLoaded(player)
+    task.wait(1) -- Allow some time for loading
+    if player.Character then
+        local character = player.Character
+        local humanoid = character:FindFirstChild("Humanoid")
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+
+        -- Check if necessary body parts are loaded
+        if humanoid and rootPart then
+            -- Mark player as fully loaded
+            playerLoadStatus[player.Name] = true
+            print(player.Name .. " is fully loaded!")
+        end
     end
 end
 
 -- Function to handle player joining
 local function onPlayerAdded(player)
-    -- Initialize spawn time when the player joins
-    playerSpawnTimes[player.Name] = os.time()
+    -- Initialize the player's load status as false
+    playerLoadStatus[player.Name] = false
 
-    -- Listen for CharacterAdded event
-    player.CharacterAdded:Connect(function()
-        -- Update spawn time for every spawn/reset
-        playerSpawnTimes[player.Name] = os.time()
-
-        -- Wait for 5 seconds and then check
-        task.delay(5, function()
-            handleChat(player)
+    -- Listen for the CharacterAdded event
+    player.CharacterAdded:Connect(function(character)
+        -- Ensure they load in completely
+        task.spawn(function()
+            setPlayerLoaded(player)
         end)
     end)
 end
@@ -658,8 +660,22 @@ for _, player in pairs(game.Players:GetPlayers()) do
     onPlayerAdded(player)
 end
 
--- Set up connections for new players
+-- Set up connections for players joining later
 game.Players.PlayerAdded:Connect(onPlayerAdded)
+
+-- Example: Check all loaded players in the table
+task.spawn(function()
+    while true do
+        task.wait(5) -- Check every 5 seconds
+        for playerName, isLoaded in pairs(playerLoadStatus) do
+            if isLoaded then
+                print(playerName .. " is marked as fully loaded.")
+            else
+                print(playerName .. " is still loading.")
+            end
+        end
+    end
+end)
 
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
