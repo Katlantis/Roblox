@@ -624,7 +624,7 @@ end)
 -- Autochat logic for listing players in the server with a delay
 local function sendJigglyPhysicsMessages()
     -- Send the initial "WAITING FOR COOLDOWN" message
-    sendChatMessage("WAITING FOR COOLDOWN")
+    sendChatMessage("Listing players on cooldown 10 seconds")
 
     -- Wait for 10 seconds before starting to list players
     task.wait(10)
@@ -659,7 +659,7 @@ local function sendJigglyPhysicsMessages()
     -- Function to send a message with a cooldown
     local function sendWithCooldown(message)
         sendChatMessage(message)
-        task.wait(5)  -- 5-second cooldown between messages
+        task.wait(3)  -- 3-second cooldown between messages
     end
 
     -- Loop through players and send messages in batches of 3
