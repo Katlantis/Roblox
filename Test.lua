@@ -625,85 +625,76 @@ end)
 local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
 local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
 local resetData = {}          -- Store player reset data (last reset time and count)
-local newPlayerTimers = {}    -- Store new player join times for cooldowns
+local loadCount = {}          -- Track how many times a player's character has loaded
+local queuedPlayers = {}      -- Queue for sending messages
 
--- Function to send chat messages with a cooldown and character limit
-local function sendJigglyPhysicsMessages()
-    local maxMessageLength = 200
-    local cooldown = 5 -- 5 seconds between messages
-    local messagePrefix = "Added jiggly physics to: "
-    local queuedPlayers = {}
-    local processing = false
+local cooldown = 5 -- Cooldown between messages (in seconds)
+local processing = false
 
-    -- Function to process the message queue
-    local function processQueue()
-        if processing then return end
-        processing = true
+-- Function to send chat messages with cooldown
+local function processQueue()
+    if processing then return end
+    processing = true
 
-        while #queuedPlayers > 0 do
-            local currentMessage = messagePrefix
-
-            -- Collect players for the current message
-            for i = #queuedPlayers, 1, -1 do
-                local playerName = table.remove(queuedPlayers, i)
-                local testMessage = currentMessage .. playerName .. (i > 1 and ", " or "")
-                if #testMessage > maxMessageLength then break end
-                currentMessage = testMessage
-            end
-
-            -- Send the message and wait for the cooldown
-            sendChatMessage(currentMessage)
-            task.wait(cooldown)
-        end
-
-        processing = false
+    while #queuedPlayers > 0 do
+        local playerName = table.remove(queuedPlayers, 1)
+        sendChatMessage("Added jiggly physics to: " .. playerName)
+        task.wait(cooldown)
     end
 
-    -- Add existing players to the queue (players already in the server)
-    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-        table.insert(queuedPlayers, player.Name)
-    end
-
-    -- Handle new players joining
-    getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
-        -- Wait a little bit to ensure the character is fully loaded
-        task.wait(5)  -- Wait for 5 seconds to ensure the character is fully loaded
-
-        -- Add new player to the queue
-        if player.Character then
-            table.insert(queuedPlayers, player.Name)
-            sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
-        end
-    end)
-
-    -- Handle character resets
-    getgenv()["Discord.gg/kxxDkhHzzN"]["CharacterAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
-        player.CharacterAdded:Connect(function(character)
-            -- Anti-spam logic for resets
-            if resetData[player.UserId] then
-                local resetInfo = resetData[player.UserId]
-                if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
-                    sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
-                    return -- Block this reset
-                end
-            end
-
-            -- Update reset data
-            resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
-            resetData[player.UserId].count = resetData[player.UserId].count + 1
-            resetData[player.UserId].lastResetTime = tick()
-
-            -- Send reset message and add the player to the queue
-            sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
-            table.insert(queuedPlayers, player.Name)
-        end)
-    end)
-
-    -- Start processing the queue after 10 seconds
-    task.wait(10)
-    sendChatMessage("Waiting for cooldown...")
-    task.defer(processQueue)
+    processing = false
 end
+
+-- Function to handle a player's character loading
+local function onCharacterAdded(player, character)
+    -- Anti-spam for resets
+    if resetData[player.UserId] then
+        local resetInfo = resetData[player.UserId]
+        if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
+            sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
+            return -- Block this reset
+        end
+    end
+
+    -- Update reset data
+    resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
+    resetData[player.UserId].count = resetData[player.UserId].count + 1
+    resetData[player.UserId].lastResetTime = tick()
+
+    -- Increment load count for the player
+    loadCount[player.UserId] = (loadCount[player.UserId] or 0) + 1
+
+    -- Only acknowledge after the character has loaded twice
+    if loadCount[player.UserId] == 2 then
+        table.insert(queuedPlayers, player.Name)
+        task.defer(processQueue)
+    end
+end
+
+-- Handle new players joining
+getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+    loadCount[player.UserId] = 0 -- Initialize load count for the player
+
+    -- Handle character loading
+    getgenv()["Discord.gg/kxxDkhHzzN"][player.UserId] = player.CharacterAdded:Connect(function(character)
+        onCharacterAdded(player, character)
+    end)
+end)
+
+-- Handle existing players in the server
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    loadCount[player.UserId] = 0 -- Initialize load count for the player
+
+    -- Handle character loading
+    getgenv()["Discord.gg/kxxDkhHzzN"][player.UserId] = player.CharacterAdded:Connect(function(character)
+        onCharacterAdded(player, character)
+    end)
+end
+
+-- Start the message processing loop
+sendChatMessage("Waiting for cooldown...")
+task.wait(10)
+task.defer(processQueue)
 
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
