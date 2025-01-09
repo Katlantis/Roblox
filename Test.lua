@@ -1,6 +1,9 @@
 local startTime = os.clock() --timer
 local ts = game:GetService("TeleportService")
 local p = game:GetService("Players").LocalPlayer
+local function isR6(player)
+    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
+end
 local Niggaversion     = "v2.1.5 Private Beta unreleased"
 local Game                                                      = game
 local Services                                                  = setmetatable({}, {
@@ -12,7 +15,6 @@ local Services                                                  = setmetatable({
         return Cache
     end
 })
-
 -- // Cleanup
 do
     if getgenv()["Discord.gg/kxxDkhHzzN"] then
