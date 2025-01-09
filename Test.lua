@@ -410,6 +410,7 @@ end
 local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
 local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
 local resetData = {}          -- Store player reset data (last reset time and count)
+local playerLoaded = {}       -- Track if the player has fully loaded their character
 
 -- Function to send chat messages with a cooldown and character limit
 local function sendJigglyPhysicsMessages()
@@ -447,6 +448,7 @@ local function sendJigglyPhysicsMessages()
     for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
         if isR6(player) then  -- Check if player is using R6
             table.insert(queuedPlayers, player.Name)
+            playerLoaded[player.Name] = true  -- Mark as loaded
         end
     end
 
@@ -458,6 +460,7 @@ local function sendJigglyPhysicsMessages()
         -- Add new player to the queue if they are using R6
         if isR6(player) then
             table.insert(queuedPlayers, player.Name)
+            playerLoaded[player.Name] = true  -- Mark as loaded
             sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
         end
     end)
@@ -465,25 +468,30 @@ local function sendJigglyPhysicsMessages()
     -- Handle character resets
     getgenv()["Discord.gg/kxxDkhHzzN"]["CharacterAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
         player.CharacterAdded:Connect(function(character)
-            -- Only process resets for R6 players
+            -- Only process resets for R6 players and after they've been loaded
             if isR6(player) then
-                -- Anti-spam logic for resets
-                if resetData[player.UserId] then
-                    local resetInfo = resetData[player.UserId]
-                    if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
-                        sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
-                        return -- Block this reset
+                if playerLoaded[player.Name] then
+                    -- Anti-spam logic for resets
+                    if resetData[player.UserId] then
+                        local resetInfo = resetData[player.UserId]
+                        if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
+                            sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
+                            return -- Block this reset
+                        end
                     end
+
+                    -- Update reset data
+                    resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
+                    resetData[player.UserId].count = resetData[player.UserId].count + 1
+                    resetData[player.UserId].lastResetTime = tick()
+
+                    -- Send reset message and add the player to the queue
+                    sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
+                    table.insert(queuedPlayers, player.Name)
+                else
+                    -- If the player has not fully loaded, just mark them as loaded
+                    playerLoaded[player.Name] = true
                 end
-
-                -- Update reset data
-                resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
-                resetData[player.UserId].count = resetData[player.UserId].count + 1
-                resetData[player.UserId].lastResetTime = tick()
-
-                -- Send reset message and add the player to the queue
-                sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
-                table.insert(queuedPlayers, player.Name)
             end
         end)
     end)
