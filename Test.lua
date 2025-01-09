@@ -621,70 +621,56 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
--- Define the function to send messages with a cooldown
 local function sendJigglyPhysicsMessages()
-    -- First, send a message saying "Waiting for cooldown"
-    sendChatMessage("Waiting for cooldown...")
+    -- Initial delay to avoid spamming on load
+    task.wait(10) 
 
-    -- Wait for 10 seconds before starting the list of players
-    task.wait(10)
-
-    -- Collect all player names in the server
-    local function collectPlayerNames()
-        local playerNames = {}
-        for _, player in pairs(Services.Players:GetPlayers()) do
-            table.insert(playerNames, player.Name)
-        end
-        return playerNames
-    end
-
-    -- Send messages listing players
-    local function sendMessages(playerNames, messagePrefix)
-        local maxMessageLength = 200
-        local currentMessage = messagePrefix
-
-        -- Function to send a message with a cooldown
-        local function sendWithCooldown(message)
-            sendChatMessage(message)
-            task.wait(5)  -- 5-second cooldown between messages
-        end
-
-        for i, name in ipairs(playerNames) do
-            local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "") -- Add comma unless it's the last name
-
-            if #testMessage > maxMessageLength then
-                -- Send the current message and start a new one
-                sendWithCooldown(currentMessage)
-                currentMessage = messagePrefix .. name .. ", " -- Start a new message
-            else
-                currentMessage = testMessage
-            end
-        end
-
-        -- Send any remaining names in the message
-        if #currentMessage > #messagePrefix then
-            sendWithCooldown(currentMessage)
-        end
-    end
-
-    -- Start by sending messages for all current players
-    local playerNames = collectPlayerNames()
-    sendMessages(playerNames, "Added jiggly physics to: ")
-
-    -- Monitor for new players
-    Services.Players.PlayerAdded:Connect(function(player)
-        task.wait(1) -- Wait for character to load
-        sendMessages({player.Name}, "A new player joined: Added jiggly physics to ")
-    end)
-
-    -- Monitor for reset characters
+    local playerNames = {}
     for _, player in pairs(Services.Players:GetPlayers()) do
-        player.CharacterAdded:Connect(function(character)
-            task.wait(1) -- Ensure character loads fully
-            sendMessages({player.Name}, "Player reset their character: Added jiggly physics to ")
+        table.insert(playerNames, player.Name)
+    end
+
+    local messagePrefix = "Jiggly physics enabled for: "
+    local maxMessageLength = 200
+    local currentMessage = messagePrefix
+
+    -- Function to send messages with a 5-second delay
+    local function sendWithCooldown(message)
+        task.spawn(function()
+            sendChatMessage(message)
+            task.wait(5) -- 5-second cooldown between messages
         end)
     end
+
+    for i, name in ipairs(playerNames) do
+        local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "")
+
+        if #testMessage > maxMessageLength then
+            -- Send the current message and reset
+            sendWithCooldown(currentMessage)
+            currentMessage = messagePrefix .. name .. ", "
+        else
+            currentMessage = testMessage
+        end
+    end
+
+    -- Send any remaining message
+    if #currentMessage > #messagePrefix then
+        sendWithCooldown(currentMessage)
+    end
 end
+
+-- Connect for players joining or resetting
+Services.Players.PlayerAdded:Connect(function(player)
+    task.wait(1) -- Small delay to ensure character is loaded
+    local message = "New player joined: " .. player.Name .. ", jiggly physics applied!"
+    sendChatMessage(message)
+end)
+
+Services.Players.PlayerRemoving:Connect(function(player)
+    local message = "Player reset: " .. player.Name .. ", reapplying jiggly physics!"
+    sendChatMessage(message)
+end)
 
 
 
