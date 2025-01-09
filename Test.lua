@@ -1,9 +1,6 @@
 local startTime = os.clock() --timer
 local ts = game:GetService("TeleportService")
 local p = game:GetService("Players").LocalPlayer
-local function isR6(player)
-    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
-end
 local Niggaversion     = "v2.1.5 Private Beta unreleased"
 local Game                                                      = game
 local Services                                                  = setmetatable({}, {
@@ -15,6 +12,7 @@ local Services                                                  = setmetatable({
         return Cache
     end
 })
+
 -- // Cleanup
 do
     if getgenv()["Discord.gg/kxxDkhHzzN"] then
@@ -46,6 +44,11 @@ local function sendChatMessage(message)
     else
         print("Autochat is disabled, message not sent.")
     end
+end
+
+-- Function to check if the player uses R6
+local function isR6(player)
+    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
 end
 
 local Version                                                   = "V2"
@@ -623,6 +626,92 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
+local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
+music.Volume = 1
+music.Name = "Music"
+music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
+music.Looped = false
+music:Play()
+
+local elapsedTime = os.clock() - startTime
+
+local roundedTime = string.format("%.2f", elapsedTime)  -- rounded time to 2 decimals
+local gradeMessage
+local grade
+
+-- Determine grade and grade-specific message
+if elapsedTime < 0.6 then
+    grade = "👑"  -- Godly (under 0.6 seconds)
+    warn("How the heck???")
+    gradeMessage = "Your grade is 👑. Godly performance! Keep it up!"
+elseif elapsedTime < 1 then
+    grade = "A"  -- Excellent (under 1 second)
+    warn("Excellent!!!🔥🔥")
+    gradeMessage = "Your grade is A. Excellent! A+ 🎯"  -- Shortened message
+elseif elapsedTime < 5 then
+    grade = "B"  -- Good (under 5 seconds)
+    warn("Very surprised 😲🤯")
+    gradeMessage = "Your grade is B. Good performance! 👍"
+elseif elapsedTime < 10 then
+    grade = "C"  -- Average (under 10 seconds)
+    warn("Decent gradescore")
+    gradeMessage = "Your grade is C. Decent performance! 👌"
+elseif elapsedTime < 20 then
+    grade = "D"  -- Slow (under 20 seconds)
+    warn("Average size")
+    gradeMessage = "Your grade is D. Could be better! 😐"  -- Shortened message
+elseif elapsedTime < 30 then
+    grade = "E"  -- Very Slow (under 30 seconds)
+    warn("Turtle speed 🐢")
+    gradeMessage = "Your grade is E. You're slow! 🐢"
+elseif elapsedTime < 40 then
+    grade = "F"  -- Extremely Slow (under 40 seconds)
+    warn("F on grades is crazy work😂")
+    gradeMessage = "Your grade is F. Failing performance! 😩"
+elseif elapsedTime < 60 then
+    grade = "💀" -- How? (under 60 seconds)
+    warn("Slow ass script")
+    gradeMessage = "Your grade is 💀. Unbelievably slow! 💀"
+else
+    grade = "☠️" -- How??? (60 seconds or more)
+    warn("Really slow ass script 😭")
+    gradeMessage = "Your grade is ☠️. Terribly slow! ☠️"
+end
+
+-- Send chat message with grade and time
+if Config.Autochat then
+    task.spawn(function()
+        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+    end)
+else
+    print("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+end
+
+if Config.Autochat then
+    task.spawn(function()
+        sendChatMessage("/e cheer")  -- Send the "/e cheer" message
+    end)
+else
+    print("Autochat is disabled")
+end
+wait(3)
+if Config.Autochat then
+    task.spawn(function()
+        wait(2)
+        sendChatMessage("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
+        wait(6)
+        sendChatMessage("My tag _garbage.cans yk what this is")
+        wait(7)
+        sendChatMessage("This message and all the messages i said before are automated!")
+    end)
+else --for the console
+    print("This script is client sided meaning no players will be able to see by this.")
+    wait(3)
+    print("My tag _garbage.cans yk what this is")
+    wait(3)
+    print("This message and all the messages i said before are automated!")
+end
+
 -- Anti-spam mechanism settings
 local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
 local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
@@ -719,92 +808,6 @@ local function sendJigglyPhysicsMessages()
     task.defer(processQueue)
 end
 
-local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
-music.Volume = 1
-music.Name = "Music"
-music.SoundId = getcustomasset("Fondra-Physics/Loaded.mp3")
-music.Looped = false
-music:Play()
-
-local elapsedTime = os.clock() - startTime
-
-local roundedTime = string.format("%.2f", elapsedTime)  -- rounded time to 2 decimals
-local gradeMessage
-local grade
-
--- Determine grade and grade-specific message
-if elapsedTime < 0.6 then
-    grade = "👑"  -- Godly (under 0.6 seconds)
-    warn("How the heck???")
-    gradeMessage = "Your grade is 👑. Godly performance! Keep it up!"
-elseif elapsedTime < 1 then
-    grade = "A"  -- Excellent (under 1 second)
-    warn("Excellent!!!🔥🔥")
-    gradeMessage = "Your grade is A. Excellent! A+ 🎯"  -- Shortened message
-elseif elapsedTime < 5 then
-    grade = "B"  -- Good (under 5 seconds)
-    warn("Very surprised 😲🤯")
-    gradeMessage = "Your grade is B. Good performance! 👍"
-elseif elapsedTime < 10 then
-    grade = "C"  -- Average (under 10 seconds)
-    warn("Decent gradescore")
-    gradeMessage = "Your grade is C. Decent performance! 👌"
-elseif elapsedTime < 20 then
-    grade = "D"  -- Slow (under 20 seconds)
-    warn("Average size")
-    gradeMessage = "Your grade is D. Could be better! 😐"  -- Shortened message
-elseif elapsedTime < 30 then
-    grade = "E"  -- Very Slow (under 30 seconds)
-    warn("Turtle speed 🐢")
-    gradeMessage = "Your grade is E. You're slow! 🐢"
-elseif elapsedTime < 40 then
-    grade = "F"  -- Extremely Slow (under 40 seconds)
-    warn("F on grades is crazy work😂")
-    gradeMessage = "Your grade is F. Failing performance! 😩"
-elseif elapsedTime < 60 then
-    grade = "💀" -- How? (under 60 seconds)
-    warn("Slow ass script")
-    gradeMessage = "Your grade is 💀. Unbelievably slow! 💀"
-else
-    grade = "☠️" -- How??? (60 seconds or more)
-    warn("Really slow ass script 😭")
-    gradeMessage = "Your grade is ☠️. Terribly slow! ☠️"
-end
-
--- Send chat message with grade and time
-if Config.Autochat then
-    task.spawn(function()
-        sendChatMessage("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
-    end)
-else
-    print("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
-end
-
-if Config.Autochat then
-    task.spawn(function()
-        sendChatMessage("/e cheer")  -- Send the "/e cheer" message
-    end)
-else
-    print("Autochat is disabled")
-end
-wait(3)
-if Config.Autochat then
-    task.spawn(function()
-        wait(2)
-        sendChatMessage("This script is client sided meaning no players will be able to see by this.")--Contact me in blue app if you saw this message _goon.intellect
-        wait(6)
-        sendChatMessage("My tag _garbage.cans yk what this is")
-        wait(7)
-        sendChatMessage("This message and all the messages i said before are automated!")
-    end)
-else --for the console
-    print("This script is client sided meaning no players will be able to see by this.")
-    wait(3)
-    print("My tag _garbage.cans yk what this is")
-    wait(3)
-    print("This message and all the messages i said before are automated!")
-end
-wait(5)
 -- Call the function when needed
 if Config.Autochat then
     task.spawn(function()
