@@ -749,15 +749,6 @@ else
     print("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
 end
 
--- Call the function when needed
-if Config.Autochat then
-    task.spawn(function()
-        sendJigglyPhysicsMessages()
-    end)
-else
-    print("Autochat is disabled.")
-end
-
 if Config.Autochat then
     task.spawn(function()
         sendChatMessage("/e cheer")  -- Send the "/e cheer" message
@@ -781,4 +772,13 @@ else --for the console
     print("My tag _garbage.cans yk what this is")
     wait(3)
     print("This message and all the messages i said before are automated!")
+end
+
+-- Call the function when needed
+if Config.Autochat then
+    task.spawn(function()
+        sendJigglyPhysicsMessages()
+    end)
+else
+    print("Autochat is disabled.")
 end
