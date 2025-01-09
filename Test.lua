@@ -677,15 +677,6 @@ local function sendJigglyPhysicsMessages()
     end
 end
 
--- Call the function when needed
-if Config.Autochat then
-    task.spawn(function()
-        sendJigglyPhysicsMessages()
-    end)
-else
-    print("Autochat is disabled.")
-end
-
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
 music.Volume = 1
 music.Name = "Music"
@@ -745,6 +736,15 @@ if Config.Autochat then
     end)
 else
     print("1st 🏆 goon script successfully " .. Niggaversion .. " loaded in " .. roundedTime .. " seconds. " .. gradeMessage .. " Enjoy your goon session! 😩😏😘😋")
+end
+
+-- Call the function when needed
+if Config.Autochat then
+    task.spawn(function()
+        sendJigglyPhysicsMessages()
+    end)
+else
+    print("Autochat is disabled.")
 end
 
 if Config.Autochat then
