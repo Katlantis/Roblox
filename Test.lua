@@ -46,6 +46,94 @@ local function sendChatMessage(message)
     end
 end
 
+-- Anti-spam mechanism settings
+local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
+local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
+local resetData = {}          -- Store player reset data (last reset time and count)
+
+-- Function to send chat messages with a cooldown and character limit
+local function sendChatMessage(message)
+    print("Sending message: " .. message)  -- Debugging line
+    game:GetService("Chat"):Chat(game.Players.LocalPlayer.Character, message, Enum.ChatColor.Blue)
+end
+
+-- Function to check if the player uses R6
+local function isR6(player)
+    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
+end
+
+-- Function to handle when a new player joins
+game:GetService("Players").PlayerAdded:Connect(function(player)
+    -- Handle the player resetting their character
+    player.CharacterAdded:Connect(function(character)
+        -- Check if the player is using R6 rig before processing
+        if not isR6(player) then
+            return  -- Skip if player is using R15 or another rig
+        end
+
+        -- Wait for 1 second to ensure the character is fully loaded
+        task.wait(1)
+
+        -- Anti-spam logic for resets
+        if resetData[player.UserId] then
+            local resetInfo = resetData[player.UserId]
+            if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
+                print(player.Name .. " is blocked from adding jiggly physics due to resets.")
+                sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
+                return -- Block this reset
+            end
+        end
+
+        -- Update reset data
+        resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
+        resetData[player.UserId].count = resetData[player.UserId].count + 1
+        resetData[player.UserId].lastResetTime = tick()
+
+        -- Send the reset message after the character is fully loaded
+        sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
+    end)
+end)
+
+-- Function to handle chat only after sufficient time has passed
+local function handleChat(player)
+    local spawnTime = playerSpawnTimes[player.Name]
+    if spawnTime and (os.time() - spawnTime) >= 5 then
+        -- Time since spawn is greater than 5 seconds, allow chat logic
+        sendChatMessage(player.Name .. " has been fully loaded!")
+    else
+        -- Not enough time has passed, skip or delay the action
+        print(player.Name .. " has not been loaded for 5 seconds yet.")
+    end
+end
+
+-- Function to handle player joining and checking for R6 rig
+local function onPlayerAdded(player)
+    -- Initialize spawn time when the player joins
+    playerSpawnTimes[player.Name] = os.time()
+
+    -- Listen for CharacterAdded event
+    player.CharacterAdded:Connect(function()
+        -- Update spawn time for every spawn/reset
+        playerSpawnTimes[player.Name] = os.time()
+
+        -- Wait for 5 seconds and then check
+        task.delay(5, function()
+            -- Check if player is using R6 rig before calling handleChat
+            if isR6(player) then
+                handleChat(player)
+            end
+        end)
+    end)
+end
+
+-- Set up connections for players already in the game
+for _, player in pairs(game.Players:GetPlayers()) do
+    onPlayerAdded(player)
+end
+
+-- Set up connections for new players
+game.Players.PlayerAdded:Connect(onPlayerAdded)
+
 local Version                                                   = "V2"
 local Client                                                    = Services.Players.LocalPlayer
 local Camera                                                    = Services.Workspace.CurrentCamera
@@ -706,91 +794,3 @@ else --for the console
     wait(3)
     print("This message and all the messages i said before are automated!")
 end
-
--- Anti-spam mechanism settings
-local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
-local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
-local resetData = {}          -- Store player reset data (last reset time and count)
-
--- Function to send chat messages with a cooldown and character limit
-local function sendChatMessage(message)
-    print("Sending message: " .. message)  -- Debugging line
-    game:GetService("Chat"):Chat(game.Players.LocalPlayer.Character, message, Enum.ChatColor.Blue)
-end
-
--- Function to check if the player uses R6
-local function isR6(player)
-    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
-end
-
--- Function to handle when a new player joins
-game:GetService("Players").PlayerAdded:Connect(function(player)
-    -- Handle the player resetting their character
-    player.CharacterAdded:Connect(function(character)
-        -- Check if the player is using R6 rig before processing
-        if not isR6(player) then
-            return  -- Skip if player is using R15 or another rig
-        end
-
-        -- Wait for 1 second to ensure the character is fully loaded
-        task.wait(1)
-
-        -- Anti-spam logic for resets
-        if resetData[player.UserId] then
-            local resetInfo = resetData[player.UserId]
-            if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
-                print(player.Name .. " is blocked from adding jiggly physics due to resets.")
-                sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
-                return -- Block this reset
-            end
-        end
-
-        -- Update reset data
-        resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
-        resetData[player.UserId].count = resetData[player.UserId].count + 1
-        resetData[player.UserId].lastResetTime = tick()
-
-        -- Send the reset message after the character is fully loaded
-        sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
-    end)
-end)
-
--- Function to handle chat only after sufficient time has passed
-local function handleChat(player)
-    local spawnTime = playerSpawnTimes[player.Name]
-    if spawnTime and (os.time() - spawnTime) >= 5 then
-        -- Time since spawn is greater than 5 seconds, allow chat logic
-        sendChatMessage(player.Name .. " has been fully loaded!")
-    else
-        -- Not enough time has passed, skip or delay the action
-        print(player.Name .. " has not been loaded for 5 seconds yet.")
-    end
-end
-
--- Function to handle player joining and checking for R6 rig
-local function onPlayerAdded(player)
-    -- Initialize spawn time when the player joins
-    playerSpawnTimes[player.Name] = os.time()
-
-    -- Listen for CharacterAdded event
-    player.CharacterAdded:Connect(function()
-        -- Update spawn time for every spawn/reset
-        playerSpawnTimes[player.Name] = os.time()
-
-        -- Wait for 5 seconds and then check
-        task.delay(5, function()
-            -- Check if player is using R6 rig before calling handleChat
-            if isR6(player) then
-                handleChat(player)
-            end
-        end)
-    end)
-end
-
--- Set up connections for players already in the game
-for _, player in pairs(game.Players:GetPlayers()) do
-    onPlayerAdded(player)
-end
-
--- Set up connections for new players
-game.Players.PlayerAdded:Connect(onPlayerAdded)
