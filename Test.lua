@@ -621,62 +621,101 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
--- Table to store player load status
-local playerLoadStatus = {}
+-- Anti-spam mechanism settings
+local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
+local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
+local resetData = {}          -- Store player reset data (last reset time and count)
+local playerLoaded = {}       -- Track if the player has fully loaded their character
 
--- Function to set a player's load status to true once they are fully loaded
-local function setPlayerLoaded(player)
-    task.wait(1) -- Allow some time for loading
-    if player.Character then
-        local character = player.Character
-        local humanoid = character:FindFirstChild("Humanoid")
-        local rootPart = character:FindFirstChild("HumanoidRootPart")
+-- Function to send chat messages with a cooldown and character limit
+local function sendJigglyPhysicsMessages()
+    local maxMessageLength = 200
+    local cooldown = 5 -- 5 seconds between messages
+    local messagePrefix = "Added jiggly physics to: "
+    local queuedPlayers = {}
+    local processing = false
 
-        -- Check if necessary body parts are loaded
-        if humanoid and rootPart then
-            -- Mark player as fully loaded
-            playerLoadStatus[player.Name] = true
-            print(player.Name .. " is fully loaded!")
+    -- Function to process the message queue
+    local function processQueue()
+        if processing then return end
+        processing = true
+
+        while #queuedPlayers > 0 do
+            local currentMessage = messagePrefix
+
+            -- Collect players for the current message
+            for i = #queuedPlayers, 1, -1 do
+                local playerName = table.remove(queuedPlayers, i)
+                local testMessage = currentMessage .. playerName .. (i > 1 and ", " or "")
+                if #testMessage > maxMessageLength then break end
+                currentMessage = testMessage
+            end
+
+            -- Send the message and wait for the cooldown
+            sendChatMessage(currentMessage)
+            task.wait(cooldown)
+        end
+
+        processing = false
+    end
+
+    -- Add existing players to the queue (players already in the server)
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if isR6(player) then  -- Check if player is using R6
+            table.insert(queuedPlayers, player.Name)
+            playerLoaded[player.Name] = true  -- Mark as loaded
         end
     end
-end
 
--- Function to handle player joining
-local function onPlayerAdded(player)
-    -- Initialize the player's load status as false
-    playerLoadStatus[player.Name] = false
+    -- Handle new players joining
+    getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+        -- Wait a little bit to ensure the character is fully loaded
+        task.wait(5)  -- Wait for 5 seconds to ensure the character is fully loaded
 
-    -- Listen for the CharacterAdded event
-    player.CharacterAdded:Connect(function(character)
-        -- Ensure they load in completely
-        task.spawn(function()
-            setPlayerLoaded(player)
+        -- Add new player to the queue if they are using R6
+        if isR6(player) then
+            table.insert(queuedPlayers, player.Name)
+            playerLoaded[player.Name] = true  -- Mark as loaded
+            sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
+        end
+    end)
+
+    -- Handle character resets
+    getgenv()["Discord.gg/kxxDkhHzzN"]["CharacterAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function(character)
+            -- Only process resets for R6 players and after they've been loaded
+            if isR6(player) then
+                if playerLoaded[player.Name] then
+                    -- Anti-spam logic for resets
+                    if resetData[player.UserId] then
+                        local resetInfo = resetData[player.UserId]
+                        if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
+                            sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
+                            return -- Block this reset
+                        end
+                    end
+
+                    -- Update reset data
+                    resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
+                    resetData[player.UserId].count = resetData[player.UserId].count + 1
+                    resetData[player.UserId].lastResetTime = tick()
+
+                    -- Send reset message and add the player to the queue
+                    sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
+                    table.insert(queuedPlayers, player.Name)
+                else
+                    -- If the player has not fully loaded, just mark them as loaded
+                    playerLoaded[player.Name] = true
+                end
+            end
         end)
     end)
+
+    -- Start processing the queue after 10 seconds
+    task.wait(10)
+    sendChatMessage("Waiting for cooldown...")
+    task.defer(processQueue)
 end
-
--- Set up connections for players already in the game
-for _, player in pairs(game.Players:GetPlayers()) do
-    onPlayerAdded(player)
-end
-
--- Set up connections for players joining later
-game.Players.PlayerAdded:Connect(onPlayerAdded)
-
--- Example: Check all loaded players in the table
-task.spawn(function()
-    while true do
-        task.wait(5) -- Check every 5 seconds
-        for playerName, isLoaded in pairs(playerLoadStatus) do
-            if isLoaded then
-                print(playerName .. " is marked as fully loaded.")
-            else
-                print(playerName .. " is still loading.")
-            end
-        end
-    end
-end)
-
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
 music.Volume = 1
@@ -762,4 +801,13 @@ else --for the console
     print("My tag _garbage.cans yk what this is")
     wait(3)
     print("This message and all the messages i said before are automated!")
+end
+wait(5)
+-- Call the function when needed
+if Config.Autochat then
+    task.spawn(function()
+        sendJigglyPhysicsMessages()
+    end)
+else
+    print("Autochat listing is disabled.")
 end
