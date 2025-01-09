@@ -621,80 +621,45 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
--- Anti-spam mechanism settings
-local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
-local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
-local resetData = {}          -- Store player reset data (last reset time and count)
-local loadCount = {}          -- Track how many times a player's character has loaded
-local queuedPlayers = {}      -- Queue for sending messages
+-- Table to track spawn times
+local playerSpawnTimes = {}
 
-local cooldown = 5 -- Cooldown between messages (in seconds)
-local processing = false
-
--- Function to send chat messages with cooldown
-local function processQueue()
-    if processing then return end
-    processing = true
-
-    while #queuedPlayers > 0 do
-        local playerName = table.remove(queuedPlayers, 1)
-        sendChatMessage("Added jiggly physics to: " .. playerName)
-        task.wait(cooldown)
-    end
-
-    processing = false
-end
-
--- Function to handle a player's character loading
-local function onCharacterAdded(player, character)
-    -- Anti-spam for resets
-    if resetData[player.UserId] then
-        local resetInfo = resetData[player.UserId]
-        if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
-            sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
-            return -- Block this reset
-        end
-    end
-
-    -- Update reset data
-    resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
-    resetData[player.UserId].count = resetData[player.UserId].count + 1
-    resetData[player.UserId].lastResetTime = tick()
-
-    -- Increment load count for the player
-    loadCount[player.UserId] = (loadCount[player.UserId] or 0) + 1
-
-    -- Only acknowledge after the character has loaded twice
-    if loadCount[player.UserId] == 2 then
-        table.insert(queuedPlayers, player.Name)
-        task.defer(processQueue)
+-- Function to handle chat only after sufficient time has passed
+local function handleChat(player)
+    local spawnTime = playerSpawnTimes[player.Name]
+    if spawnTime and (os.time() - spawnTime) >= 5 then
+        -- Time since spawn is greater than 5 seconds, allow chat logic
+        sendChatMessage(player.Name .. " has been fully loaded!")
+    else
+        -- Not enough time has passed, skip or delay the action
+        print(player.Name .. " has not been loaded for 5 seconds yet.")
     end
 end
 
--- Handle new players joining
-getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
-    loadCount[player.UserId] = 0 -- Initialize load count for the player
+-- Function to handle player joining
+local function onPlayerAdded(player)
+    -- Initialize spawn time when the player joins
+    playerSpawnTimes[player.Name] = os.time()
 
-    -- Handle character loading
-    getgenv()["Discord.gg/kxxDkhHzzN"][player.UserId] = player.CharacterAdded:Connect(function(character)
-        onCharacterAdded(player, character)
-    end)
-end)
+    -- Listen for CharacterAdded event
+    player.CharacterAdded:Connect(function()
+        -- Update spawn time for every spawn/reset
+        playerSpawnTimes[player.Name] = os.time()
 
--- Handle existing players in the server
-for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-    loadCount[player.UserId] = 0 -- Initialize load count for the player
-
-    -- Handle character loading
-    getgenv()["Discord.gg/kxxDkhHzzN"][player.UserId] = player.CharacterAdded:Connect(function(character)
-        onCharacterAdded(player, character)
+        -- Wait for 5 seconds and then check
+        task.delay(5, function()
+            handleChat(player)
+        end)
     end)
 end
 
--- Start the message processing loop
-sendChatMessage("Waiting for cooldown...")
-task.wait(10)
-task.defer(processQueue)
+-- Set up connections for players already in the game
+for _, player in pairs(game.Players:GetPlayers()) do
+    onPlayerAdded(player)
+end
+
+-- Set up connections for new players
+game.Players.PlayerAdded:Connect(onPlayerAdded)
 
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
