@@ -621,57 +621,62 @@ getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"]               = Services.Playe
     end)  
 end)
 
+-- Function to send chat messages with a cooldown and character limit
 local function sendJigglyPhysicsMessages()
-    -- Initial delay to avoid spamming on load
-    task.wait(10) 
+    local maxMessageLength = 200
+    local cooldown = 5 -- 5 seconds between messages
+    local messagePrefix = "Added jiggly physics to: "
+    local queuedPlayers = {}
+    local processing = false
 
-    local playerNames = {}
-    for _, player in pairs(Services.Players:GetPlayers()) do
-        table.insert(playerNames, player.Name)
+    -- Function to process the message queue
+    local function processQueue()
+        if processing then return end
+        processing = true
+
+        while #queuedPlayers > 0 do
+            local currentMessage = messagePrefix
+
+            -- Collect players for the current message
+            for i = #queuedPlayers, 1, -1 do
+                local playerName = table.remove(queuedPlayers, i)
+                local testMessage = currentMessage .. playerName .. (i > 1 and ", " or "")
+                if #testMessage > maxMessageLength then break end
+                currentMessage = testMessage
+            end
+
+            -- Send the message and wait for the cooldown
+            sendChatMessage(currentMessage)
+            task.wait(cooldown)
+        end
+
+        processing = false
     end
 
-    local messagePrefix = "Jiggly physics enabled for: "
-    local maxMessageLength = 200
-    local currentMessage = messagePrefix
-
-    -- Function to send messages with a 5-second delay
-    local function sendWithCooldown(message)
-        task.spawn(function()
-            sendChatMessage(message)
-            task.wait(5) -- 5-second cooldown between messages
+    -- Add existing players to the queue
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        table.insert(queuedPlayers, player.Name)
+        getgenv()["Discord.gg/kxxDkhHzzN"][player.Name] = player.CharacterAdded:Connect(function()
+            table.insert(queuedPlayers, player.Name)
+            sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
         end)
     end
 
-    for i, name in ipairs(playerNames) do
-        local testMessage = currentMessage .. name .. (i < #playerNames and ", " or "")
+    -- Handle new players joining
+    getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
+        table.insert(queuedPlayers, player.Name)
+        sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
+        getgenv()["Discord.gg/kxxDkhHzzN"][player.Name] = player.CharacterAdded:Connect(function()
+            table.insert(queuedPlayers, player.Name)
+            sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
+        end)
+    end)
 
-        if #testMessage > maxMessageLength then
-            -- Send the current message and reset
-            sendWithCooldown(currentMessage)
-            currentMessage = messagePrefix .. name .. ", "
-        else
-            currentMessage = testMessage
-        end
-    end
-
-    -- Send any remaining message
-    if #currentMessage > #messagePrefix then
-        sendWithCooldown(currentMessage)
-    end
+    -- Start processing the queue after 10 seconds
+    task.wait(10)
+    sendChatMessage("Waiting for cooldown...")
+    task.defer(processQueue)
 end
-
--- Connect for players joining or resetting
-Services.Players.PlayerAdded:Connect(function(player)
-    task.wait(1) -- Small delay to ensure character is loaded
-    local message = "New player joined: " .. player.Name .. ", jiggly physics applied!"
-    sendChatMessage(message)
-end)
-
-Services.Players.PlayerRemoving:Connect(function(player)
-    local message = "Player reset: " .. player.Name .. ", reapplying jiggly physics!"
-    sendChatMessage(message)
-end)
-
 
 
 local music = Instance.new("Sound", game.Players.LocalPlayer.Backpack)
