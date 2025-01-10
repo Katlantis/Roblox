@@ -734,29 +734,45 @@ else --for the console
     print("This message and all the messages i said before are automated!")
 end
 wait(7)
+-- Handle player joining
+local function handlePlayerJoin(plr)
+    -- Wait for the player's character to load
+    plr.CharacterAdded:Connect(function(character)
+        -- Wait to ensure the character is fully loaded
+        task.wait(1)
+
+        -- Check if the player is using R6
+        if isR6(plr) then
+            sendChatMessage(MESSAGE_PREFIX_JOIN .. plr.Name)
+        else
+            print(plr.Name .. " is not using R6 rig. Skipping acknowledgment.")
+        end
+    end)
+end
+
 -- Handle player leaving (R6-only)
-local function handlePlayerLeave(player)
-    if isR6(player) then
-        sendChatMessage(MESSAGE_PREFIX_LEAVE .. player.Name)
+local function handlePlayerLeave(plr)
+    if isR6(plr) then
+        sendChatMessage(MESSAGE_PREFIX_LEAVE .. plr.Name)
     else
-        print(player.Name .. " left but is not using R6 rig. No acknowledgment sent.")
+        print(plr.Name .. " left but is not using R6 rig. No acknowledgment sent.")
     end
 end
 
 -- Set up connections for players already in the game
-for _, player in pairs(Players:GetPlayers()) do
-    if isR6(player) then
-        sendChatMessage(MESSAGE_PREFIX_JOIN .. player.Name)
+for _, plr in pairs(Players:GetPlayers()) do
+    if isR6(plr) then
+        sendChatMessage(MESSAGE_PREFIX_JOIN .. plr.Name)
     end
-    handlePlayerJoin(player) -- Ensure reset logic for already-present players
+    handlePlayerJoin(plr) -- Ensure reset logic for already-present players
 end
 
 -- Set up connections for new players joining
-Players.PlayerAdded:Connect(function(player)
-    handlePlayerJoin(player)
+Players.PlayerAdded:Connect(function(plr)
+    handlePlayerJoin(plr)
 end)
 
 -- Set up connections for players leaving
-Players.PlayerRemoving:Connect(function(player)
-    handlePlayerLeave(player)
+Players.PlayerRemoving:Connect(function(plr)
+    handlePlayerLeave(plr)
 end)
