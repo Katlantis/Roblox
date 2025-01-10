@@ -734,9 +734,13 @@ else --for the console
     print("This message and all the messages i said before are automated!")
 end
 wait(7)
--- Handle player leaving
+-- Handle player leaving (R6-only)
 local function handlePlayerLeave(player)
-    sendChatMessage(MESSAGE_PREFIX_LEAVE .. player.Name)
+    if isR6(player) then
+        sendChatMessage(MESSAGE_PREFIX_LEAVE .. player.Name)
+    else
+        print(player.Name .. " left but is not using R6 rig. No acknowledgment sent.")
+    end
 end
 
 -- Set up connections for players already in the game
