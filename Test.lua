@@ -25,11 +25,6 @@ do
 end
 -- // Cleanup End
 
--- Function to check if the player uses R6
-local function isR6(player)
-    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
-end
-
 local Downloads                                                 = {}
 local List                                                      = {}
 local Modules                                                   = {}
@@ -49,25 +44,6 @@ local function sendChatMessage(message)
     else
         print("Autochat is disabled, message not sent.")
     end
-end
-
--- Utility function to check if a player uses R6
-local function isR6(player)
-    return player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
-end
-
--- Centralized player state tracker (to track player load state)
-local playerStates = {}
-
--- Function to mark player as loaded
-local function markPlayerAsLoaded(player)
-    playerStates[player.Name] = playerStates[player.Name] or { isLoaded = false }
-    playerStates[player.Name].isLoaded = true
-end
-
--- Function to check if player is loaded
-local function isPlayerLoaded(player)
-    return playerStates[player.Name] and playerStates[player.Name].isLoaded
 end
 
 local Version                                                   = "V2"
@@ -100,6 +76,33 @@ Services.StarterGui:SetCore("SendNotification", {
 })
 
 if not IsLoaded(Game) then Game.Loaded:Wait() end
+
+-- Constants for message prefixes
+local MESSAGE_PREFIX_JOIN = "Joined using R6: "
+local MESSAGE_PREFIX_LEAVE = "Left the server: "
+
+-- Function to check if the player uses R6
+local function isR6(player)
+    return player.Character
+        and player.Character:FindFirstChildOfClass("Humanoid")
+        and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
+end
+
+-- Handle player joining
+local function handlePlayerJoin(player)
+    -- Wait for the player's character to load
+    player.CharacterAdded:Connect(function(character)
+        -- Wait to ensure the character is fully loaded
+        task.wait(1)
+
+        -- Check if the player is using R6
+        if isR6(player) then
+            sendChatMessage(MESSAGE_PREFIX_JOIN .. player.Name)
+        else
+            print(player.Name .. " is not using R6 rig. Skipping acknowledgment.")
+        end
+    end)
+end
 
 local function CustomRequire(File, Bool)
     local Custom                                                = getcustomasset(string.format("Fondra-Physics/Modules/%s", File), true)
@@ -731,107 +734,25 @@ else --for the console
     print("This message and all the messages i said before are automated!")
 end
 wait(7)
--- Anti-spam mechanism settings
-local RESET_LIMIT = 3         -- Max resets allowed within the cooldown period
-local RESET_COOLDOWN = 10     -- Time window for resets (in seconds)
-local resetData = {}          -- Store player reset data (last reset time and count)
-local playerLoaded = {}       -- Track if the player has fully loaded their character
-
--- Function to send chat messages with a cooldown and character limit
-local function sendJigglyPhysicsMessages()
-    local maxMessageLength = 200
-    local cooldown = 5 -- 5 seconds between messages
-    local messagePrefix = "Added jiggly physics to: "
-    local queuedPlayers = {}
-    local processing = false
-
-    -- Function to process the message queue
-    local function processQueue()
-        if processing then return end
-        processing = true
-
-        while #queuedPlayers > 0 do
-            local currentMessage = messagePrefix
-
-            -- Collect players for the current message
-            for i = #queuedPlayers, 1, -1 do
-                local playerName = table.remove(queuedPlayers, i)
-                local testMessage = currentMessage .. playerName .. (i > 1 and ", " or "")
-                if #testMessage > maxMessageLength then break end
-                currentMessage = testMessage
-            end
-
-            -- Send the message and wait for the cooldown
-            sendChatMessage(currentMessage)
-            task.wait(cooldown)
-        end
-
-        processing = false
-    end
-
-    -- Add existing players to the queue (players already in the server)
-    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-        if isR6(player) then  -- Check if player is using R6
-            table.insert(queuedPlayers, player.Name)
-            playerLoaded[player.Name] = true  -- Mark as loaded
-        end
-    end
-
-    -- Handle new players joining
-    getgenv()["Discord.gg/kxxDkhHzzN"]["PlayerAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
-        -- Wait a little bit to ensure the character is fully loaded
-        task.wait(5)  -- Wait for 5 seconds to ensure the character is fully loaded
-
-        -- Add new player to the queue if they are using R6
-        if isR6(player) then
-            table.insert(queuedPlayers, player.Name)
-            playerLoaded[player.Name] = true  -- Mark as loaded
-            sendChatMessage(player.Name .. " joined the server, adding jiggly physics.")
-        end
-    end)
-
-    -- Handle character resets
-    getgenv()["Discord.gg/kxxDkhHzzN"]["CharacterAdded"] = game:GetService("Players").PlayerAdded:Connect(function(player)
-        player.CharacterAdded:Connect(function(character)
-            -- Only process resets for R6 players and after they've been loaded
-            if isR6(player) then
-                if playerLoaded[player.Name] then
-                    -- Anti-spam logic for resets
-                    if resetData[player.UserId] then
-                        local resetInfo = resetData[player.UserId]
-                        if resetInfo.count >= RESET_LIMIT and tick() - resetInfo.lastResetTime < RESET_COOLDOWN then
-                            sendChatMessage(player.Name .. " is temporarily blocked from adding jiggly physics due to excessive resets.")
-                            return -- Block this reset
-                        end
-                    end
-
-                    -- Update reset data
-                    resetData[player.UserId] = resetData[player.UserId] or { count = 0, lastResetTime = 0 }
-                    resetData[player.UserId].count = resetData[player.UserId].count + 1
-                    resetData[player.UserId].lastResetTime = tick()
-
-                    -- Send reset message and add the player to the queue
-                    sendChatMessage(player.Name .. " reset their character, adding jiggly physics.")
-                    table.insert(queuedPlayers, player.Name)
-                else
-                    -- If the player has not fully loaded, just mark them as loaded
-                    playerLoaded[player.Name] = true
-                end
-            end
-        end)
-    end)
-
-    -- Start processing the queue after 10 seconds
-    task.wait(10)
-    sendChatMessage("Waiting for cooldown...")
-    task.defer(processQueue)
+-- Handle player leaving
+local function handlePlayerLeave(player)
+    sendChatMessage(MESSAGE_PREFIX_LEAVE .. player.Name)
 end
 
--- Call the function when needed
-if Config.Autochat then
-    task.spawn(function()
-        sendJigglyPhysicsMessages()
-    end)
-else
-    print("Autochat is disabled.")
+-- Set up connections for players already in the game
+for _, player in pairs(Players:GetPlayers()) do
+    if isR6(player) then
+        sendChatMessage(MESSAGE_PREFIX_JOIN .. player.Name)
+    end
+    handlePlayerJoin(player) -- Ensure reset logic for already-present players
 end
+
+-- Set up connections for new players joining
+Players.PlayerAdded:Connect(function(player)
+    handlePlayerJoin(player)
+end)
+
+-- Set up connections for players leaving
+Players.PlayerRemoving:Connect(function(player)
+    handlePlayerLeave(player)
+end)
