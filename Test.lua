@@ -708,6 +708,7 @@ else --for the console
 end
 task.wait(7)
 -- Prefixes
+local Players = game:GetService("Players")
 local MESSAGE_PREFIX_JOIN = "Welcome R6 player: "
 local MESSAGE_PREFIX_LEAVE = "Goodbye R6 player: "
 local MESSAGE_PREFIX_COUNT = "Currently, there are %d R6 players in the game."
