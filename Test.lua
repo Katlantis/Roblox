@@ -391,7 +391,7 @@ local Apply                                                     = function(Model
     local Ass                                                   = FindFirstChild(Body, "Ass Motor")
     local Pussy                                                 = FindFirstChild(Body, "Pussy Motor")
 
-    if Boobs then Body.Pussy["PrimaryPussy"].Transparency = Config.Debug and 0 or 1 end
+    if Pussy then Body.Pussy["PrimaryPussy"].Transparency = Config.Debug and 0 or 1 end
     if Boobs then Body.Boobs["PrimaryBoobs"].Transparency = Config.Debug and 0 or 1 end
     if Ass then Body.Ass["PrimaryCheeks"].Transparency  = Config.Debug and 0 or 1 end
     if Dick then Body.Dick["PrimaryDick"].Transparency = Config.Debug and 0 or 1 end
@@ -706,13 +706,46 @@ else --for the console
     wait(3)
     print("This message and all the messages i said before are automated!")
 end
-wait(7)
+task.wait(7)
+-- Prefixes
+local MESSAGE_PREFIX_JOIN = "Welcome R6 player: "
+local MESSAGE_PREFIX_LEAVE = "Goodbye R6 player: "
+local MESSAGE_PREFIX_COUNT = "Currently, there are %d R6 players in the game."
+
+-- Store the flag for sending R6 count message in getgenv()["Discord.gg/kxxDkhHzzN"]
+getgenv()["Discord.gg/kxxDkhHzzN"].hasSentR6CountMessage = getgenv()["Discord.gg/kxxDkhHzzN"].hasSentR6CountMessage or false -- Initialize it if not already set
+
+local function sendChatMessage(message)
+    if message and message ~= "" then  -- Prevent sending empty or nil messages
+        if sendMessageEnabled then
+            if isLegacyChat then
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+            else
+                TextChatService.TextChannels.RBXGeneral:SendAsync(message)
+            end
+            print("Sending chat message: " .. message)
+        else
+            print("Autochat is disabled, message not sent.")
+        end
+    else
+        print("Message is empty or nil. Not sending.")
+    end
+end
+
+-- Function to check if the player uses R6
+local function isR6(plr)
+    return plr.Character 
+        and plr.Character:FindFirstChildOfClass("Humanoid") 
+        and plr.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
+end
+
 -- Handle player joining
 local function handlePlayerJoin(plr)
     -- Wait for the player's character to load
     plr.CharacterAdded:Connect(function(character)
         -- Wait to ensure the character is fully loaded
-        task.wait(1)
+        character:WaitForChild("Humanoid")
+        character:WaitForChild("Head")
 
         -- Check if the player is using R6
         if isR6(plr) then
@@ -732,11 +765,26 @@ local function handlePlayerLeave(plr)
     end
 end
 
+-- Count the number of R6 players currently in the game
+local function countR6Players()
+    local count = 0
+    for _, plr in pairs(Players:GetPlayers()) do
+        if isR6(plr) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+-- Send the count message once for all existing R6 players (after cleanup)
+if not getgenv()["Discord.gg/kxxDkhHzzN"].hasSentR6CountMessage then
+    local r6Count = countR6Players()
+    sendChatMessage(string.format(MESSAGE_PREFIX_COUNT, r6Count))
+    getgenv()["Discord.gg/kxxDkhHzzN"].hasSentR6CountMessage = true -- Set the flag to true to avoid sending it again
+end
+
 -- Set up connections for players already in the game
 for _, plr in pairs(Players:GetPlayers()) do
-    if isR6(plr) then
-        sendChatMessage(MESSAGE_PREFIX_JOIN .. plr.Name)
-    end
     handlePlayerJoin(plr) -- Ensure reset logic for already-present players
 end
 
