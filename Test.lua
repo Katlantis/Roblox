@@ -77,33 +77,6 @@ Services.StarterGui:SetCore("SendNotification", {
 
 if not IsLoaded(Game) then Game.Loaded:Wait() end
 
--- Constants for message prefixes
-local MESSAGE_PREFIX_JOIN = "Joined using R6: "
-local MESSAGE_PREFIX_LEAVE = "Left the server: "
-
--- Function to check if the player uses R6
-local function isR6(player)
-    return player.Character
-        and player.Character:FindFirstChildOfClass("Humanoid")
-        and player.Character.Humanoid.RigType == Enum.HumanoidRigType.R6
-end
-
--- Handle player joining
-local function handlePlayerJoin(player)
-    -- Wait for the player's character to load
-    player.CharacterAdded:Connect(function(character)
-        -- Wait to ensure the character is fully loaded
-        task.wait(1)
-
-        -- Check if the player is using R6
-        if isR6(player) then
-            sendChatMessage(MESSAGE_PREFIX_JOIN .. player.Name)
-        else
-            print(player.Name .. " is not using R6 rig. Skipping acknowledgment.")
-        end
-    end)
-end
-
 local function CustomRequire(File, Bool)
     local Custom                                                = getcustomasset(string.format("Fondra-Physics/Modules/%s", File), true)
     local Object                                                = (Game.GetObjects(Game, Custom)[1]):Clone()
